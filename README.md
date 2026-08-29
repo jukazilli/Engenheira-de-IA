@@ -8,18 +8,24 @@
 
 Este repositório documenta o processo de desenvolvimento de aplicações assistido por ChatGPT e Codex adotado a partir da experiência do projeto DayGym.
 
-O objetivo não é pedir para uma IA "criar um sistema" a partir de um prompt único. O processo separa descoberta, definição de produto, experiência, engenharia, execução, validação e evolução documental.
+O objetivo não é pedir para uma IA "criar um sistema" a partir de um prompt único. O processo separa descoberta, definição de produto, experiência, engenharia, arquitetura, infraestrutura, execução, validação e evolução documental.
 
 A regra central é:
 
 ```text
 Discovery humano assistido por IA
         ↓
-Documentação canônica
+Documentação canônica aprovada
         ↓
-Governança documental
+Engenharia
+        ↓
+Arquitetura
+        ↓
+Infraestrutura
         ↓
 Backlog rastreável
+        ↓
+Fundação / Setup
         ↓
 Implementação por fatias
         ↓
@@ -67,7 +73,7 @@ Uma hipótese discutida no Discovery não pode ser promovida automaticamente a r
 
 ### 2.2. Markdown é o formato canônico
 
-Todos os documentos de produto, UX, UI, engenharia, backlog e rastreabilidade devem ser mantidos prioritariamente em `.md`.
+Todos os documentos de produto, UX, UI, engenharia, arquitetura, infraestrutura, backlog e rastreabilidade devem ser mantidos prioritariamente em `.md`.
 
 ```text
 .md    → formato canônico
@@ -88,10 +94,121 @@ Quando a documentação não define uma decisão relevante, o agente deve:
 
 1. identificar a lacuna;
 2. verificar se ela pode ser resolvida pelos princípios existentes;
-3. acionar a governança documental quando aplicável;
-4. pedir decisão humana quando a lacuna alterar produto, negócio, risco ou identidade.
+3. verificar se uma skill, check ou regra canônica existente resolve a lacuna;
+4. pedir decisão humana quando a lacuna alterar produto, negócio, risco, custo ou identidade.
 
 A ausência de especificação não autoriza invenção silenciosa.
+
+### 2.5. Os documentos devem ser gerados e aprovados um por vez
+
+A baseline não deve ser produzida integralmente em uma única resposta.
+
+O fluxo recomendado é:
+
+```text
+Discovery / documento anterior
+        ↓
+IA gera UM documento .md
+        ↓
+Humano lê
+        ↓
+Humano aprova ou corrige
+        ↓
+IA ajusta o MESMO documento
+        ↓
+Humano confirma a decisão
+        ↓
+Arquivo é salvo/versionado
+        ↓
+Somente então gerar o próximo documento
+```
+
+Essa regra existe para impedir propagação de erro.
+
+```text
+Briefing mal interpretado
+        ↓
+Visão de PO incorreta
+        ↓
+UX/UI incorreta
+        ↓
+Engenharia inadequada
+        ↓
+Arquitetura inadequada
+        ↓
+Infraestrutura inadequada
+        ↓
+Backlog inadequado
+        ↓
+Código tecnicamente correto para o produto errado
+```
+
+Ao revisar um documento, o humano pode orientar ajustes naturais, por exemplo:
+
+> "Acho que X deve funcionar assim e Y daquela forma. Ajuste este documento e depois seguimos para o próximo."
+
+A IA deve alterar o artefato já existente, e não criar versões concorrentes como `final`, `novo`, `(1)` ou similares.
+
+### 2.6. Onde salvar os documentos do projeto
+
+Após aprovação, cada documento deve ser entregue como `.md`.
+
+Quando não houver integração com Git, o ChatGPT pode gerar o arquivo para download e o usuário o mantém na pasta canônica do projeto.
+
+Quando houver acesso autorizado ao GitHub, o ChatGPT pode criar ou atualizar diretamente o documento no repositório.
+
+Nos dois casos, a regra permanece:
+
+```text
+UM documento
+        ↓
+revisão humana
+        ↓
+ajuste
+        ↓
+aprovação
+        ↓
+versionamento
+        ↓
+próximo documento
+```
+
+### 2.7. Compatibilidade atualmente homologada
+
+Este processo foi criado e testado no fluxo **ChatGPT + Codex**.
+
+O escopo atualmente homologado é:
+
+- **ChatGPT em plano pago**, usando um modelo recente de alta capacidade para Discovery, entrevistas, pesquisa, documentação e revisão;
+- **Codex em plano pago**, usando um modelo de alta capacidade para engenharia, setup, implementação, testes, automação e evidências;
+- **GitHub** como fonte versionada recomendada;
+- **Playwright ou automação equivalente de navegador** quando o setup exige interação humano-assistida com painéis web.
+
+Outros agentes, IDEs autônomas ou modelos menores podem funcionar, mas não foram validados de ponta a ponta por esta metodologia.
+
+A metodologia não fixa nomes específicos de modelos porque as opções disponíveis mudam. Deve-se utilizar o modelo de maior capacidade adequado à etapa quando o projeto exigir raciocínio documental, arquitetural ou execução de engenharia extensa.
+
+Como regra operacional:
+
+```text
+ChatGPT
+→ Discovery
+→ entrevista
+→ pesquisa
+→ documentação
+→ revisão com o humano
+
+Codex
+→ consome documentação aprovada
+→ executa engenharia
+→ Fundação
+→ implementação
+→ testes
+→ automação
+→ evidências
+```
+
+Essa divisão também evita consumir o ambiente de coding para tarefas documentais que podem ser realizadas de forma mais econômica no ChatGPT.
 
 ---
 
@@ -107,12 +224,15 @@ Principios_de_UX_UI.md
 04_Direcao_de_UI_e_Design_System.md
 05_Especificacao_de_UX.md
 06_Tecnicas_de_Desenvolvimento.md
-07_Arquitetura_e_Engenharia.md
+07_Engenharia_e_Arquitetura.md
+Infraestrutura_e_Plano_de_Fundacao.md
 08_Backlog_Canonico_Rastreabilidade_e_Plano_de_Entrega.md
 09_Matriz_Operacional_de_Rastreabilidade.md
 ```
 
 `Principios_de_UX_UI.md` não é numerado porque não representa apenas uma etapa linear. Ele é uma camada normativa transversal, específica para a aplicação, consultada continuamente por UI, UX, Design System e implementação.
+
+`Infraestrutura_e_Plano_de_Fundacao.md` também não altera a numeração histórica 01–09. Ele é uma ponte operacional entre o dimensionamento técnico do Documento 07 e os itens FND do backlog.
 
 ---
 
@@ -591,44 +711,36 @@ Definir regras operacionais de implementação.
 
 Quando uma tecnologia instalada possuir documentação local ou versão diferente do conhecimento de treinamento do modelo, a IA deve consultar a documentação correspondente à versão efetivamente instalada antes de escrever código.
 
+## Separação entre Técnicas e Engenharia
+
+`06_Tecnicas_de_Desenvolvimento.md` define **como trabalhar no código**.
+
+O Documento 07 define **quais propriedades técnicas o sistema precisa suportar e qual arquitetura responde a essas propriedades**.
+
+Exemplo:
+
+```text
+Técnica:
+TypeScript strict é obrigatório.
+
+Engenharia:
+O aplicativo precisa suportar uso offline e reconciliação posterior sem duplicar operações.
+
+Arquitetura:
+Persistência local + IDs de operação + comandos idempotentes + sincronização explícita.
+```
+
 ---
 
-# 11. Documento 07 — Arquitetura e Engenharia
+# 11. Documento 07 — Engenharia e Arquitetura
 
 ## Pergunta central
 
-> **Qual estrutura técnica consegue entregar o produto e a experiência definidos anteriormente?**
+> **Quais forças técnicas o produto precisa suportar e qual estrutura arquitetural consegue atendê-las com o menor conjunto de compromissos aceitáveis?**
 
 ## Objetivo
 
-Converter requisitos de produto, UI e UX em uma arquitetura implementável.
-
-## Deve conter, conforme o projeto
-
-- contexto do sistema;
-- aplicações e superfícies;
-- módulos;
-- fronteiras;
-- domínio;
-- contratos;
-- APIs;
-- banco de dados;
-- autenticação e autorização;
-- RLS ou mecanismos equivalentes;
-- filas;
-- eventos;
-- cache;
-- offline;
-- sincronização;
-- infraestrutura;
-- ambientes;
-- deploy;
-- segurança;
-- observabilidade;
-- backup e restore;
-- integrações;
-- requisitos não funcionais;
-- decisões arquiteturais importantes.
+Converter requisitos de produto, UI e UX em requisitos de engenharia e, somente depois, em uma arquitetura implementável.
 
 ## Ordem obrigatória de raciocínio
 
@@ -637,16 +749,760 @@ Produto
    ↓
 Experiência
    ↓
-Requisitos técnicos
+Requisitos de engenharia
    ↓
-Arquitetura
+Forças / restrições / atributos de qualidade
+   ↓
+Alternativas arquiteturais
+   ↓
+Decisão arquitetural
+   ↓
+Estrutura do repositório
+   ↓
+Fronteiras e contratos
+   ↓
+Inventário de necessidades de infraestrutura
 ```
 
-Evitar arquiteturas que partem de uma tecnologia escolhida e tentam adaptar o produto a ela sem justificativa.
+A arquitetura é uma resposta às forças de engenharia. Não deve começar com uma tecnologia ou padrão favorito e tentar adaptar o produto a ele.
+
+## 11.1. O que deve ser avaliado primeiro — Engenharia
+
+A parte de engenharia deve responder:
+
+> **Quais propriedades técnicas este produto precisa possuir para funcionar, evoluir e ser operado adequadamente?**
+
+Deve avaliar, conforme aplicável:
+
+### Produto e escala
+
+- quantidade esperada de usuários;
+- crescimento projetado;
+- picos de utilização;
+- volume de dados;
+- volume de mídia;
+- perfil de leitura e escrita;
+- necessidade de realtime;
+- necessidade de offline;
+- processamento assíncrono;
+- integrações.
+
+### Qualidade
+
+- disponibilidade;
+- latência;
+- consistência;
+- tolerância a falhas;
+- resiliência;
+- testabilidade;
+- manutenibilidade;
+- observabilidade;
+- reprodutibilidade;
+- auditabilidade.
+
+### Segurança e privacidade
+
+- tipos de dados;
+- dados sensíveis;
+- autenticação;
+- autorização;
+- segregação;
+- least privilege;
+- retenção;
+- backup;
+- restore;
+- superfícies de ataque;
+- requisitos regulatórios quando aplicáveis.
+
+### Operação
+
+- tamanho e experiência da equipe;
+- tolerância a complexidade operacional;
+- frequência de deploy;
+- necessidade de staging;
+- rollback;
+- suporte;
+- custo de manutenção;
+- necessidade de execução local.
+
+### Evolução
+
+- funcionalidades futuras previsíveis;
+- extensibilidade;
+- integrações futuras;
+- possibilidade de separação de módulos;
+- migrações previsíveis;
+- portabilidade desejada.
+
+A saída deve produzir forças de engenharia explicitamente identificadas, por exemplo:
+
+```text
+ENG-001 — Uma ação concluída offline não pode ser duplicada ao sincronizar.
+ENG-002 — O frontend nunca pode possuir credenciais administrativas.
+ENG-003 — A API precisa ser implantável sem obrigar novo build do frontend.
+ENG-004 — O Beta será mantido por equipe pequena; baixa complexidade operacional é prioridade alta.
+```
+
+## 11.2. O que não deve ser escolhido antes dessa análise
+
+Não escolher antecipadamente apenas por preferência:
+
+```text
+MVC
+MVVM
+Clean Architecture
+Hexagonal
+microservices
+monorepo
+Supabase
+Cloud Run
+Redis
+Kafka
+```
+
+Esses nomes representam soluções possíveis. Primeiro deve existir o problema técnico que justifica a solução.
+
+## 11.3. O que pertence à Arquitetura
+
+Depois das forças de engenharia, a arquitetura responde:
+
+> **Qual estrutura técnica satisfaz melhor essas forças?**
+
+Deve definir, conforme aplicável:
+
+- contexto do sistema;
+- aplicações e superfícies;
+- módulos;
+- domínio;
+- contratos;
+- APIs;
+- dados;
+- autenticação e autorização;
+- cache;
+- offline;
+- sincronização;
+- eventos;
+- filas;
+- integrações;
+- trust boundaries;
+- fronteiras de dependência;
+- requisitos não funcionais materializados em decisões;
+- decisões arquiteturais importantes;
+- alternativas rejeitadas.
+
+## 11.4. Estratégia do repositório é decisão arquitetural
+
+O Documento 07 deve decidir explicitamente:
+
+- repositório único simples, monorepo ou polyrepo;
+- justificativa da escolha;
+- estrutura de diretórios;
+- aplicações existentes;
+- packages/libs compartilhados;
+- localização do domínio;
+- contratos compartilhados;
+- design tokens compartilhados quando houver;
+- migrations;
+- infraestrutura como código quando existir;
+- tooling;
+- testes;
+- documentação;
+- fronteiras de importação;
+- ownership lógico.
+
+Perguntas úteis:
+
+- Web e mobile compartilham domínio ou contratos?
+- API e worker compartilham runtime?
+- Existe necessidade de versionamento independente?
+- Times diferentes precisam publicar componentes separadamente?
+- Um único CI consegue validar todo o projeto adequadamente?
+- O acoplamento de releases é benéfico ou prejudicial?
+- Existem bibliotecas internas realmente compartilhadas?
+
+Exemplo de monorepo possível:
+
+```text
+/apps
+  /web
+  /mobile
+  /api
+  /worker
+/packages
+  /domain
+  /contracts
+  /design-tokens
+  /config
+/supabase
+/infra
+/tooling
+/docs
+```
+
+Esse exemplo não é template obrigatório. Uma única aplicação simples pode ficar melhor em:
+
+```text
+/src
+/tests
+/docs
+```
+
+A arquitetura deve evitar complexidade cerimonial.
+
+## 11.5. Escolha do modelo arquitetural
+
+A IA deve identificar candidatos coerentes e comparar alternativas quando houver decisão material.
+
+Exemplos possíveis:
+
+- MVC;
+- MVVM;
+- arquitetura em camadas;
+- Clean Architecture;
+- Hexagonal / Ports and Adapters;
+- Modular Monolith;
+- microservices;
+- event-driven architecture;
+- CQRS;
+- arquitetura orientada a serverless;
+- combinação controlada de padrões.
+
+Não existe arquitetura universal desta metodologia.
+
+Exemplo insuficiente:
+
+```text
+Usaremos Clean Architecture porque separa responsabilidades.
+```
+
+Exemplo adequado:
+
+```text
+O domínio precisa ser compartilhável entre web, mobile e testes sem depender de React,
+Expo, banco ou HTTP. Por isso, regras de domínio serão isoladas em um package puro e
+integrações entrarão por adapters. Não será adotada uma Clean Architecture cerimonial
+completa; apenas as fronteiras que resolvem esse requisito serão utilizadas.
+```
+
+A decisão deve explicar quais forças resolve e quais custos introduz.
+
+## 11.6. Comparação antes da decisão
+
+Quando houver alternativas relevantes, a IA pode usar uma matriz de decisão:
+
+| Critério | Peso | Opção A | Opção B | Opção C |
+| --- | ---: | ---: | ---: | ---: |
+| simplicidade inicial | | | | |
+| testabilidade | | | | |
+| isolamento de domínio | | | | |
+| velocidade de desenvolvimento | | | | |
+| operação | | | | |
+| escala | | | | |
+| custo de mudança | | | | |
+| adequação à equipe | | | | |
+
+A matriz existe para explicitar trade-offs, não para criar precisão matemática artificial.
+
+## 11.7. Fronteiras devem ser verificáveis
+
+Uma boa decisão arquitetural deve, quando possível, virar regra verificável.
+
+```text
+Decisão:
+/packages/domain não depende de framework.
+
+Verificação:
+boundary check impede imports de React, Next, Expo ou SDKs de infraestrutura.
+```
+
+Outro exemplo:
+
+```text
+Decisão:
+clientes nunca usam credenciais administrativas.
+
+Verificação:
+secret scanning + check de variáveis públicas + teste negativo.
+```
+
+Preferir:
+
+```text
+DECISÃO
+   ↓
+REGRA
+   ↓
+TESTE / CHECK
+```
+
+## 11.8. Decisões rejeitadas também devem ser registradas
+
+Decisões arquiteturais relevantes podem usar ADR curto:
+
+```markdown
+### ADR-003 — Não adotar microservices no Beta
+
+Status: aceita
+
+Contexto:
+Equipe pequena, domínio ainda em formação e baixo volume inicial.
+
+Decisão:
+Modular Monolith.
+
+Motivos:
+- menor custo operacional;
+- transações simples;
+- deploy único do backend;
+- fronteiras modulares preservam opção de extração futura.
+
+Revisitar quando:
+- módulos precisarem escala independente;
+- ownership por times mudar;
+- frequência de deploy independente se tornar requisito.
+```
+
+Isso impede que um agente futuro reabra decisões sem contexto.
+
+## 11.9. Saída obrigatória para a etapa de infraestrutura
+
+O Documento 07 deve terminar com um inventário de necessidades sem escolher silenciosamente provedores.
+
+Exemplo:
+
+```text
+INF-NEED-001 — PostgreSQL gerenciado com backup.
+INF-NEED-002 — Auth com e-mail e recuperação de conta.
+INF-NEED-003 — Hosting web com CDN.
+INF-NEED-004 — Runtime stateless para API.
+INF-NEED-005 — Runtime privado para worker.
+INF-NEED-006 — Armazenamento privado.
+INF-NEED-007 — CI/CD.
+INF-NEED-008 — Secrets manager.
+INF-NEED-009 — Observabilidade.
+```
+
+Arquitetura define **o que tecnicamente precisamos**. A etapa seguinte define **onde e com quais serviços essas necessidades serão executadas**.
+
+## Critério de qualidade do Documento 07
+
+O Documento 07 está maduro quando outra IA consegue lê-lo e montar a estrutura inicial do projeto sem inventar o modelo arquitetural, o tipo de repositório, as fronteiras ou a intenção dos módulos.
 
 ---
 
-# 12. Documento 08 — Backlog Canônico, Rastreabilidade e Plano de Entrega
+# 12. Infraestrutura e Plano de Fundação
+
+## Pergunta central
+
+> **Onde e com quais serviços a arquitetura aprovada será executada, considerando crescimento, custo, segurança e operação desejada pelo humano?**
+
+## Objetivo
+
+Transformar o inventário de necessidades produzido pelo Documento 07 em uma infraestrutura pesquisada, aprovada e executável pelos itens FND do backlog.
+
+A separação é:
+
+```text
+ENGENHARIA
+"Quais propriedades técnicas precisamos suportar?"
+        ↓
+ARQUITETURA
+"Como o software será estruturado para suportá-las?"
+        ↓
+INFRAESTRUTURA
+"Onde e com quais serviços essa arquitetura será executada?"
+        ↓
+FUNDAÇÃO
+"Crie e valide o ambiente necessário."
+```
+
+## 12.1. A IA deve entrevistar o humano
+
+Infraestrutura não deve ser escolhida somente por preferência técnica do agente.
+
+A entrevista deve ser curta e adaptada ao projeto.
+
+### Natureza do produto
+
+Perguntar, conforme aplicável:
+
+- É protótipo, ferramenta interna, projeto pessoal ou produto comercial?
+- Existe expectativa de muitos usuários no futuro?
+- Há previsão de crescimento rápido?
+- Haverá usuários externos desde o início?
+- Existem dados pessoais, financeiros, médicos, profissionais ou outros dados sensíveis?
+- Qual disponibilidade é esperada?
+
+### Estratégia de custo
+
+- Quer começar com custo zero quando possível?
+- Aceita pagar desde a Fundação?
+- Existe orçamento mensal aproximado?
+- Prefere custo mínimo agora ou menos migração futura?
+- Free tiers com limites são aceitáveis?
+- Recursos pagos exigem aprovação individual?
+
+**Regra:** contratação, upgrade de plano ou criação de recurso que possa gerar cobrança exige aprovação humana explícita.
+
+### Local versus cloud
+
+- Prefere começar somente em `localhost`?
+- Quer staging em nuvem desde o início?
+- Precisa compartilhar o ambiente com outras pessoas?
+- A máquina local pode fazer parte da operação?
+
+A IA deve explicar consequências.
+
+```text
+localhost
++ custo potencialmente menor
++ simplicidade inicial
+- difícil compartilhar
+- depende da máquina do usuário
+- não comprova comportamento real de cloud
+
+cloud / staging
++ ambiente reproduzível
++ acesso remoto
++ valida integrações reais
++ permite CI/CD e evidência operacional
+- pode exigir contas, setup e eventualmente custo
+```
+
+### Operação
+
+- Prefere serviços gerenciados?
+- Existe equipe de DevOps?
+- Quer reduzir o número de provedores?
+- Deseja evitar lock-in mesmo com maior complexidade?
+- Já possui provedores aprovados?
+
+### Capacidades
+
+Perguntar quando relevante sobre:
+
+- realtime;
+- offline;
+- arquivos/mídia;
+- e-mail/push/SMS/WhatsApp;
+- workers;
+- filas/eventos;
+- scheduler;
+- processamento pesado;
+- IA;
+- busca;
+- região;
+- backup/restore;
+- logs/métricas/alertas.
+
+## 12.2. Pesquisa web atual é obrigatória
+
+Preços, free tiers, quotas, regiões, planos e produtos mudam.
+
+Antes de recomendar infraestrutura para um novo projeto, a IA deve pesquisar informações atuais, preferencialmente em fontes oficiais:
+
+1. documentação oficial;
+2. pricing oficial;
+3. quotas e limits;
+4. regiões;
+5. segurança/compliance quando relevante;
+6. SLA/status quando necessário.
+
+A pesquisa deve responder:
+
+- o serviço continua disponível?
+- existe free tier ou crédito inicial?
+- quais limites afetam o projeto?
+- quando começa a cobrança?
+- a região necessária existe?
+- existe alternativa mais simples?
+- possui API/CLI/IaC?
+- existem restrições relevantes para produção?
+
+Nunca canonizar simplesmente:
+
+```text
+"Esse serviço é grátis."
+```
+
+Preferir:
+
+```text
+"Na pesquisa realizada em AAAA-MM-DD, o provedor oferecia camada gratuita
+com os seguintes limites relevantes [...]. Revalidar antes da contratação."
+```
+
+## 12.3. A IA deve comparar alternativas
+
+Quando houver mais de uma opção razoável, apresentar de duas a quatro alternativas.
+
+| Critério | Opção A | Opção B | Opção C |
+| --- | --- | --- | --- |
+| custo inicial | | | |
+| camada gratuita | | | |
+| facilidade de setup | | | |
+| operação | | | |
+| escala | | | |
+| automação | | | |
+| lock-in | | | |
+| regiões | | | |
+| adequação ao projeto | | | |
+
+A recomendação deve explicar por que a alternativa escolhida combina com as respostas do humano e com as necessidades arquiteturais.
+
+## 12.4. Perfil de infraestrutura de referência
+
+A metodologia pode sugerir como ponto de partida, quando compatível e após revalidação atual:
+
+- **GitHub** — repositório, pull requests e CI;
+- **Supabase** — PostgreSQL gerenciado, autenticação e recursos de backend quando adequados;
+- **Cloudflare Pages ou hosting web gerenciado equivalente** — frontend quando compatível;
+- **Google Cloud Run ou runtime serverless/containerizado equivalente** — APIs e workers quando necessários;
+- **GitHub Actions** — quality gates e automação de entrega;
+- **Terraform ou IaC equivalente** — quando a complexidade justificar;
+- **Playwright** — E2E, validação visual e setup humano-assistido quando apropriado.
+
+Esse perfil é referência, não obrigação.
+
+Nunca escolher a stack apenas porque ela foi usada em outro projeto.
+
+## 12.5. O plano deve mapear a infraestrutura completa
+
+Conforme aplicável, documentar:
+
+### Repositório e entrega
+
+- provedor Git;
+- branches;
+- proteções;
+- CI;
+- estratégia de promoção.
+
+A **estrutura lógica do repositório** já foi decidida no Documento 07. Aqui são definidos os serviços operacionais ligados a ele.
+
+### Ambientes
+
+- local;
+- development remoto, se existir;
+- staging;
+- production;
+- segregação entre ambientes.
+
+### Frontend
+
+- provedor;
+- região quando aplicável;
+- build;
+- domínio;
+- variáveis públicas;
+- CDN/cache.
+
+### Backend/API
+
+- runtime;
+- provedor;
+- escalabilidade;
+- exposição pública/privada;
+- health checks;
+- secrets;
+- logs.
+
+### Banco de dados
+
+- tecnologia;
+- provedor;
+- instância/projeto;
+- ambientes;
+- migrations;
+- backup;
+- restore;
+- região;
+- modelo de acesso;
+- política de credenciais.
+
+### Autenticação
+
+- provedor;
+- métodos habilitados;
+- SMTP/e-mail quando necessário;
+- redirect URLs;
+- MFA quando aplicável;
+- separação de chaves públicas e privadas.
+
+### Storage e mídia
+
+- provedor;
+- buckets;
+- acesso público/privado;
+- limites;
+- retenção.
+
+### Workers, jobs, filas e eventos
+
+- necessidade;
+- runtime;
+- scheduler;
+- fila;
+- retry;
+- DLQ quando aplicável;
+- idempotência.
+
+### Observabilidade
+
+- logs;
+- métricas;
+- erros;
+- alertas;
+- tracing quando necessário.
+
+### Segurança
+
+- secrets manager;
+- IAM;
+- least privilege;
+- scanning;
+- backups;
+- exposição de serviços;
+- segregação de ambiente.
+
+### Custos
+
+- recursos gratuitos;
+- recursos potencialmente cobrados;
+- gatilhos de upgrade;
+- alertas/budget quando disponíveis;
+- aprovações necessárias para escalar.
+
+## 12.6. O plano gera a Fundação — FND
+
+Depois da aprovação da infraestrutura, o Documento 08 deve transformar o plano em habilitadores FND.
+
+Exemplo:
+
+```text
+FND-001 — Criar repositório e proteção básica
+FND-002 — Fixar toolchain e lockfile
+FND-003 — Configurar CI inicial
+FND-004 — Criar projeto de banco de staging
+FND-005 — Configurar migrations
+FND-006 — Criar aplicação web de staging
+FND-007 — Criar API de staging
+FND-008 — Configurar secrets
+FND-009 — Configurar autenticação mínima
+FND-010 — Criar observabilidade mínima
+FND-011 — Validar backup/restore aplicável
+FND-012 — Smoke test da fundação
+```
+
+Os IDs reais devem ser derivados das necessidades do projeto.
+
+FND não termina quando as contas foram criadas. Termina quando existe evidência de que o ambiente está utilizável.
+
+```text
+repositório criado
++
+CI executando
++
+banco acessível pelo mecanismo aprovado
++
+migrations funcionando
++
+serviços implantados
++
+segredos fora do código
++
+staging acessível
++
+smoke tests aprovados
++
+rastreabilidade reconciliada
+=
+FUNDAÇÃO OPERACIONAL
+```
+
+## 12.7. Automação do setup
+
+A prioridade deve ser:
+
+```text
+API / CLI / IaC oficial
+        ↓ se insuficiente
+conector autorizado / OAuth
+        ↓ se insuficiente
+Playwright em sessão autenticada pelo humano
+        ↓ se bloqueado
+passo a passo manual seguro
+```
+
+Playwright é útil para:
+
+- abrir o painel correto;
+- navegar depois de autenticação humana;
+- configurar opções não expostas por API;
+- validar visualmente o ambiente;
+- executar smoke/E2E;
+- reduzir trabalho manual repetitivo.
+
+Não deve ser usado para contornar controles de segurança.
+
+## 12.8. Login e credenciais — humano no circuito
+
+Se uma etapa exigir login, MFA, CAPTCHA, aceite legal, compra, cartão ou visualização única de segredo, a automação deve devolver essa ação ao humano.
+
+Fluxo:
+
+```text
+Agente abre/prepara a página
+        ↓
+Humano faz login diretamente no provedor
+        ↓
+Humano conclui MFA/CAPTCHA/aceite quando necessário
+        ↓
+Agente continua na sessão já autorizada
+```
+
+O usuário não deve enviar pelo chat:
+
+- senhas;
+- service role keys;
+- private keys;
+- API secrets;
+- refresh tokens;
+- recovery codes;
+- tokens permanentes;
+- dados de cartão.
+
+Quando um segredo precisar ser criado, preferir armazená-lo diretamente no secret manager, GitHub Secrets ou mecanismo equivalente, sem fazê-lo transitar pelo chat.
+
+Se a IA não conseguir concluir uma etapa, deve fornecer um mini-runbook seguro dizendo:
+
+- qual painel abrir;
+- qual menu acessar;
+- onde clicar;
+- o que criar ou selecionar;
+- qual valor não sensível preencher;
+- o que **não** copiar para o chat;
+- como confirmar que a etapa terminou;
+- qual evidência segura permite continuar.
+
+## 12.9. Custos exigem aprovação explícita
+
+Classificar ações de infraestrutura como:
+
+```text
+GRATUITA / FREE TIER
+POTENCIALMENTE COBRÁVEL
+COBRÁVEL
+DESCONHECIDA — REVALIDAR
+```
+
+Se houver dúvida, tratar como potencialmente cobrável.
+
+O agente não pode contratar, fazer upgrade ou criar recurso que possa gerar cobrança sem informar finalidade, modelo de cobrança conhecido e obter aprovação humana explícita.
+
+---
+
+# 13. Documento 08 — Backlog Canônico, Rastreabilidade e Plano de Entrega
 
 ## Pergunta central
 
@@ -708,9 +1564,27 @@ TEST-TRN-014-02
 
 Não criar itens vagos como "implementar tela de treino" quando o comportamento esperado puder ser dividido em requisitos verificáveis.
 
+## Fundação deve aparecer explicitamente no backlog
+
+Os itens `FND-*` representam setup e habilitadores técnicos, não funcionalidades de produto.
+
+Eles devem ser derivados conjuntamente de:
+
+```text
+06 Técnicas de Desenvolvimento
+        +
+07 Engenharia e Arquitetura
+        +
+Infraestrutura e Plano de Fundação
+        ↓
+FND do Backlog
+```
+
+A implementação funcional deve iniciar sobre uma Fundação considerada pronta ou sobre uma exceção explicitamente documentada.
+
 ---
 
-# 13. Documento 09 — Matriz Operacional de Rastreabilidade
+# 14. Documento 09 — Matriz Operacional de Rastreabilidade
 
 ## Pergunta central
 
@@ -732,46 +1606,393 @@ A matriz deve ser legível por IA e mantida em Markdown sempre que possível.
 
 ---
 
-# 14. Governança documental — MAE e MFEE
+# 15. Governança portátil por Skills e Agents
 
-O processo utiliza skills de governança documental do Codex chamadas **MAE** e **MFEE**.
+A metodologia não deve depender de frameworks privados ou nomes exclusivos de uma máquina.
 
-## Regra de integração
-
-Os detalhes internos desses frameworks não fazem parte desta metodologia e não devem ser inventados ou duplicados aqui.
-
-Eles são tratados como **caixas-pretas de governança** capazes de analisar o estado documental e decidir, conforme suas próprias regras, quando um documento precisa:
-
-- ser mantido;
-- ser atualizado;
-- ser canonizado;
-- ser reconciliado;
-- gerar um novo documento derivado.
-
-## Contrato esperado
+Ela deve documentar **as capacidades necessárias** para que outro ambiente compatível possa recriá-las como skills, agents, comandos, checks ou automações equivalentes.
 
 ```text
-Documentação canônica
+PROCESSO CANÔNICO
         ↓
-MAE / MFEE
+define capacidades
         ↓
-analisa impacto
+SKILLS
+habilidades reutilizáveis e pequenas
         ↓
-┌──────────┬──────────┬──────────┐
-│ mantém   │ atualiza │ cria     │
-│ documento│ documento│ derivado │
-└──────────┴──────────┴──────────┘
-        ↓
-canonização
-        ↓
-Codex continua a execução
+AGENTS
+orquestram responsabilidades maiores
 ```
 
-O objetivo é impedir que implementação e documentação evoluam separadamente.
+## 15.1. Skill x Agent
+
+### Skill
+
+Uma skill é uma habilidade reutilizável com gatilho, entradas, regras, saída e limites claros.
+
+Exemplos:
+
+- verificar consistência documental;
+- comparar screenshot com referência;
+- detectar padrão de bug recorrente;
+- validar fronteiras arquiteturais.
+
+### Agent
+
+Um agent é um papel operacional que coordena documentos, ferramentas e várias skills para alcançar um objetivo maior.
+
+Exemplos:
+
+- conduzir a Fundação;
+- executar uma fatia do backlog;
+- revisar uma release;
+- auditar arquitetura;
+- revisar qualidade visual.
+
+## 15.2. Skill recomendada — `document-consistency`
+
+### Objetivo
+
+Manter documentação, backlog, matriz, código, testes e evidências coerentes entre si.
+
+Deve verificar, conforme aplicável:
+
+- documentos canônicos;
+- backlog;
+- matriz de rastreabilidade;
+- Issues relevantes;
+- código alterado;
+- testes;
+- CI/staging;
+- documentação derivada.
+
+Não permitir inconsistências como:
+
+```text
+Backlog = Done
+Matriz = Planned
+Teste = inexistente
+Staging = sem evidência
+```
+
+Também deve detectar:
+
+- implementação que contradiz arquitetura;
+- UI que contradiz Princípios;
+- backlog sem origem documental;
+- requisito removido ainda tratado como ativo;
+- documento descrevendo comportamento inexistente;
+- código entregue sem atualização de rastreabilidade.
+
+A skill não pode mascarar um bug atualizando o documento automaticamente para combinar com o runtime incorreto. Antes deve determinar qual camada possui precedência.
+
+## 15.3. Skill recomendada — `backlog-evidence-audit`
+
+### Objetivo
+
+Determinar se um item foi realmente entregue.
+
+```text
+requisito
+   ↓
+critérios de aceite
+   ↓
+implementação existe?
+   ↓
+testes cobrem critérios?
+   ↓
+gates aprovados?
+   ↓
+staging é necessário e foi validado?
+   ↓
+evidência é suficiente?
+```
+
+Estados úteis:
+
+```text
+NOT_STARTED
+IN_PROGRESS
+IMPLEMENTED_NOT_VALIDATED
+VALIDATED
+BLOCKED
+```
+
+Não inferir `VALIDATED` apenas porque existe commit.
+
+## 15.4. Skill recomendada — `architecture-conformance`
+
+### Objetivo
+
+Transformar decisões do Documento 07 em verificações recorrentes.
+
+Exemplo:
+
+```text
+Decisão:
+packages/domain não depende de frameworks.
+
+Skill:
+verifica imports proibidos.
+```
+
+Outro exemplo:
+
+```text
+Decisão:
+cliente não possui segredo administrativo.
+
+Skill:
+verifica variáveis públicas, bundles e padrões de secrets.
+```
+
+Quando uma decisão ainda não possuir check automatizável, a skill deve registrar a lacuna como oportunidade de tooling.
+
+## 15.5. Skill recomendada — `foundation-readiness`
+
+### Objetivo
+
+Determinar se a Fundação está realmente pronta para receber funcionalidades.
+
+Pode verificar:
+
+- estrutura do repo conforme arquitetura;
+- toolchain;
+- lockfile;
+- CI;
+- branches/proteções quando acessíveis;
+- banco;
+- migrations;
+- auth mínima;
+- serviços;
+- secrets;
+- staging;
+- observabilidade mínima;
+- smoke tests;
+- rastreabilidade operacional.
+
+Resultado:
+
+```text
+FND_READY
+FND_PARTIAL
+FND_BLOCKED
+```
+
+## 15.6. Skill de aprendizado — `discover-to-skill`
+
+### Objetivo
+
+Detectar quando um conhecimento descoberto durante uma ocorrência no projeto possui valor suficiente para virar habilidade reutilizável.
+
+A finalidade é reduzir retrabalho, contexto repetido e gasto de tokens em problemas já compreendidos.
+
+Um evento é candidato quando, por exemplo:
+
+- o mesmo bug ocorreu novamente;
+- o mesmo diagnóstico exige raciocínio extenso repetidamente;
+- um setup é realizado de forma semelhante em vários projetos;
+- existe erro previsível que pode ser detectado antes de build/deploy;
+- uma regra de revisão se repete;
+- a correção pode virar check determinístico;
+- um incidente revelou uma classe de problema, e não apenas um caso isolado.
+
+Fluxo:
+
+```text
+ocorrência real
+        ↓
+IA resolve
+        ↓
+há valor de reutilização?
+        ↓
+procurar skill/check existente
+        ↓
+registrar Issue com causa e prevenção
+        ↓
+acionar mecanismo de criação de skill disponível
+        ↓
+criar teste/check quando possível
+        ↓
+executar consistência documental
+```
+
+Exemplo:
+
+```text
+Bug reaparece em migrations
+        ↓
+IA reconhece a mesma causa raiz
+        ↓
+correção novamente consome contexto e tokens
+        ↓
+discover-to-skill classifica como reutilizável
+        ↓
+registra Issue
+        ↓
+registra causa, detecção e prevenção
+        ↓
+cria skill/check/teste
+        ↓
+próxima ocorrência pode ser detectada antes
+```
+
+Antes de criar uma nova skill, verificar se já existe capacidade equivalente.
+
+Nem todo bug deve virar skill. Problema isolado, improvável de repetir e sem valor geral permanece como correção normal.
+
+Pergunta de decisão:
+
+> **Se esse evento ocorrer novamente, queremos que a IA gaste praticamente o mesmo raciocínio para resolvê-lo?**
+
+Se a resposta for não, existe candidato para skill, check, runbook ou automação.
+
+### Issue como memória operacional
+
+Uma ocorrência reutilizável pode ser registrada em Issue com estrutura semelhante a:
+
+```markdown
+## Problema recorrente
+
+## Sintoma
+
+## Causa raiz
+
+## Como detectar
+
+## Como corrigir
+
+## Como prevenir
+
+## Onde ocorreu
+
+## Potencial de automação
+```
+
+A Issue funciona como memória auditável do incidente, não como substituto da documentação canônica.
+
+## 15.7. Skill visual — `visual-reference-to-spec`
+
+### Objetivo
+
+Transformar uma referência visual em informação estruturada e comparar essa referência com a UI real do projeto.
+
+Pode receber:
+
+- screenshot;
+- wireframe;
+- aplicativo de referência;
+- tela aprovada;
+- protótipo visual.
+
+Primeiro deve decompor a referência, conforme observável:
+
+- arquitetura da informação;
+- hierarquia;
+- tarefa mental aparente;
+- densidade;
+- espaçamento;
+- alinhamento;
+- grid;
+- tipografia relativa;
+- superfícies;
+- navegação;
+- posição de CTAs;
+- ações secundárias;
+- estados;
+- padrões de componentes;
+- sinais de marca.
+
+Depois deve cruzar a referência com:
+
+- `Principios_de_UX_UI.md`;
+- Documento 04;
+- Design System;
+- tarefa mental da tela.
+
+A referência visual não possui precedência automática sobre os princípios do produto.
+
+Por fim, deve comparar a referência com screenshot da implementação e gerar delta objetivo:
+
+| Aspecto | Referência | Implementação | Delta | Severidade |
+| --- | --- | --- | --- | --- |
+| CTA | persistente inferior | topo | viola direção | alta |
+| densidade | baixa | cards aninhados | excessiva | alta |
+| tipografia | hierarquia clara | pesos semelhantes | fraca | média |
+
+A saída deve explicar **o que mudar e por quê**, relacionando a correção às decisões canônicas. Não apenas dizer "deixe igual à imagem".
+
+Referências externas servem para inspiração e análise de padrões. A skill deve evitar copiar cegamente identidade proprietária, assets ou textos distintivos quando o objetivo é construir identidade própria.
+
+## 15.8. Skills complementares
+
+### `issue-to-knowledge`
+
+Converte Issues relevantes encerradas em conhecimento persistente quando houver valor além do ticket, podendo gerar:
+
+- runbook;
+- ADR;
+- check;
+- teste de regressão;
+- atualização de arquitetura;
+- atualização de técnicas;
+- nova skill.
+
+Nem toda Issue exige nova documentação.
+
+### `ui-principles-audit`
+
+Revisa uma tela contra os princípios específicos da aplicação, avaliando:
+
+- tarefa mental dominante;
+- competição entre CTAs;
+- densidade;
+- linguagem;
+- visibilidade da ação principal;
+- exposição de ações destrutivas;
+- consistência com a personalidade da marca;
+- comportamento responsivo;
+- sinais de UI genérica.
+
+Os achados devem ser relacionados a princípios identificáveis, não ao gosto subjetivo do agente.
+
+## 15.9. Agents recomendados
+
+### `document-steward-agent`
+
+Coordena consistência documental, reconciliação de status, precedência e ausência de fontes concorrentes.
+
+Pode usar `document-consistency`, `backlog-evidence-audit` e `issue-to-knowledge`.
+
+### `architecture-review-agent`
+
+Revisa forças de engenharia, alternativas arquiteturais, estrutura de repo, boundaries, ADRs e conformidade arquitetural.
+
+### `foundation-orchestrator-agent`
+
+Consome Técnicas + Engenharia/Arquitetura + Infraestrutura + itens FND e conduz o setup, respeitando gates humanos para autenticação, custo e ações destrutivas.
+
+### `backlog-implementation-agent`
+
+Executa uma fatia canônica do backlog, lê origens documentais, implementa, testa, produz evidência e atualiza rastreabilidade.
+
+### `visual-quality-agent`
+
+Coordena análise de referência, princípios, Documento 04, screenshots e correções de fidelidade/identidade.
+
+### `release-audit-agent`
+
+Valida se uma release possui critérios, testes, gates, staging, evidência e rastreabilidade suficientes antes da promoção.
+
+## 15.10. Regra de portabilidade
+
+A metodologia define o comportamento esperado das capacidades, não a implementação privada de uma máquina.
+
+Cada ambiente pode implementá-las por skills, agents, comandos ou checks equivalentes, desde que preserve o contrato de comportamento e os gates humanos definidos aqui.
 
 ---
 
-# 15. Documentação de segunda geração
+# 16. Documentação de segunda geração
 
 Os documentos 01 a 09 formam a baseline inicial, mas não representam toda a documentação que um projeto terá durante sua vida.
 
@@ -803,9 +2024,11 @@ Exemplos de documentos derivados:
 
 Esses documentos devem nascer quando o conhecimento se torna necessário, e não apenas para preencher uma lista antecipadamente.
 
+Skills de consistência e descoberta podem sugerir ou produzir esses artefatos quando houver justificativa, mas não devem criar documentação por burocracia.
+
 ---
 
-# 16. Documentação deve se transformar em contrato executável quando possível
+# 17. Documentação deve se transformar em contrato executável quando possível
 
 O padrão desejado é:
 
@@ -853,14 +2076,14 @@ A documentação deixa de ser somente descritiva e passa a participar da qualida
 
 ---
 
-# 17. Três níveis de verdade
+# 18. Três níveis de verdade
 
 O processo trabalha com três níveis complementares:
 
 | Camada | Fontes principais | Pergunta |
 | --- | --- | --- |
 | Verdade de Produto | Docs 01–05 | O que o produto deve fazer e por quê? |
-| Verdade de Engenharia | Docs 06–07 + derivados | Como isso deve funcionar tecnicamente? |
+| Verdade de Engenharia | Docs 06–07 + Infraestrutura + derivados | Como isso deve funcionar tecnicamente? |
 | Verdade de Execução | Docs 08–09 + código + testes + CI | O que foi realmente entregue e comprovado? |
 
 Exemplo:
@@ -881,24 +2104,61 @@ Runtime: tabela exposta sem RLS
 
 ---
 
-# 18. Execução pelo Codex
+# 19. Execução pelo Codex
 
 Depois da canonização da baseline, o Codex não deve receber apenas um prompt genérico para "construir o sistema".
 
 Ele deve trabalhar dentro de um universo de decisões previamente definido.
 
 ```text
-O que construir      → Produto
-Como decidir         → PO + Princípios
-Como deve parecer    → UI + Design System
-Como deve funcionar  → UX
-Como programar       → Técnicas
-Como estruturar      → Arquitetura
-Em que ordem         → Backlog
-Como provar          → Rastreabilidade + testes
-Quando documentar    → MAE / MFEE
-Quando terminou      → Gates + staging
+O que construir       → Produto
+Como decidir          → PO + Princípios
+Como deve parecer     → UI + Design System
+Como deve funcionar   → UX
+Como programar        → Técnicas
+O que precisa suportar→ Engenharia
+Como estruturar       → Arquitetura
+Onde executar         → Infraestrutura
+Em que ordem          → Backlog
+Como provar           → Rastreabilidade + testes
+Quando reconciliar    → skills/agents de governança
+Quando terminou       → Gates + staging
 ```
+
+## Fundação antes das funcionalidades
+
+O Codex deve consumir os itens `FND-*` do backlog como uma fase explícita de Fundação/Setup.
+
+FND pode incluir:
+
+- estrutura do repositório;
+- runtimes e package manager;
+- CI/CD;
+- banco;
+- migrations;
+- autenticação;
+- storage;
+- API/worker;
+- secrets;
+- staging;
+- observabilidade;
+- backup/restore;
+- quality gates;
+- smoke tests.
+
+A Fundação deriva de:
+
+```text
+06 Técnicas
++
+07 Engenharia e Arquitetura
++
+Infraestrutura e Plano de Fundação
+        ↓
+Itens FND do Backlog
+```
+
+O Codex não deve escolher silenciosamente provedores nem contratar recursos durante a execução da Fundação.
 
 ## Fluxo esperado de cada fatia
 
@@ -915,7 +2175,7 @@ Criar/atualizar testes
         ↓
 Executar gates locais
         ↓
-Acionar governança documental quando necessário
+Executar checks/skills aplicáveis
         ↓
 Atualizar rastreabilidade
         ↓
@@ -928,7 +2188,7 @@ Promover
 
 ---
 
-# 19. Quality Gates
+# 20. Quality Gates
 
 Cada projeto define seus gates concretos no Documento 06, mas a metodologia espera, quando aplicável:
 
@@ -945,13 +2205,16 @@ Cada projeto define seus gates concretos no Documento 06, mas a metodologia espe
 - verificação de boundaries;
 - smoke tests;
 - migrações verificadas;
-- validação de infraestrutura.
+- validação de infraestrutura;
+- conformidade arquitetural;
+- consistência documental;
+- auditoria de evidência do backlog.
 
 Um item não deve ser considerado entregue apenas porque existe código.
 
 ---
 
-# 20. Staging como parte da definição de pronto
+# 21. Staging como parte da definição de pronto
 
 A implementação deve ser comprovada em ambiente representativo antes da promoção final quando a natureza do projeto permitir.
 
@@ -989,7 +2252,7 @@ Quando o projeto adotar promoção staging-first, o mesmo artefato ou SHA valida
 
 ---
 
-# 21. Identidade de produto e prevenção do "visual de IA"
+# 22. Identidade de produto e prevenção do "visual de IA"
 
 Uma aplicação construída por IA não deve parecer uma composição genérica de componentes populares.
 
@@ -1029,16 +2292,18 @@ IMPLEMENTAÇÃO
 
 O mesmo agente pode desenvolver produtos diferentes, mas cada produto precisa preservar sua identidade própria.
 
+A capacidade `visual-reference-to-spec` complementa esse processo quando existir referência visual, mas a referência não substitui os princípios nem a identidade canônica do produto.
+
 ---
 
-# 22. Estrutura recomendada para documentos canônicos
+# 23. Estrutura recomendada para documentos canônicos
 
 Quando fizer sentido, documentos podem usar metadados simples no início:
 
 ```yaml
 ---
 document_id: DOC-07
-title: Arquitetura e Engenharia
+title: Engenharia e Arquitetura
 status: canonical
 version: 1.0.0
 depends_on:
@@ -1047,8 +2312,9 @@ depends_on:
   - DOC-05
   - DOC-06
 governs:
+  - engineering
   - architecture
-  - infrastructure
+  - infrastructure-needs
   - security
 ---
 ```
@@ -1059,7 +2325,7 @@ O versionamento principal continua sendo o Git. Não criar burocracia documental
 
 ---
 
-# 23. Critério de canonização
+# 24. Critério de canonização
 
 Um documento pode ser considerado canônico quando:
 
@@ -1071,11 +2337,12 @@ Um documento pode ser considerado canônico quando:
 6. utiliza linguagem suficientemente objetiva para humanos e agentes;
 7. identifica pendências relevantes;
 8. está versionado em Git;
-9. pode originar requisitos rastreáveis quando aplicável.
+9. pode originar requisitos rastreáveis quando aplicável;
+10. foi revisado e aprovado pelo humano responsável antes de alimentar a próxima camada.
 
 ---
 
-# 24. Regra de precedência
+# 25. Regra de precedência
 
 Em caso de aparente conflito, a resolução deve considerar a natureza da decisão.
 
@@ -1094,7 +2361,11 @@ Direção UI + UX
         ↓
 Técnicas
         ↓
+Engenharia
+        ↓
 Arquitetura
+        ↓
+Infraestrutura
         ↓
 Backlog
         ↓
@@ -1105,9 +2376,11 @@ Uma implementação não altera silenciosamente uma decisão de produto.
 
 Se o runtime demonstrar que a decisão anterior é inviável ou inadequada, deve haver reconciliação documental antes de tratar a divergência como novo padrão.
 
+Uma skill de consistência pode apontar a divergência, mas não deve resolver conflito de precedência simplesmente fazendo o documento combinar com o runtime.
+
 ---
 
-# 25. Processo completo resumido
+# 26. Processo completo resumido
 
 ```text
 ┌─────────────────────────────────────────────┐
@@ -1117,26 +2390,37 @@ Se o runtime demonstrar que a decisão anterior é inviável ou inadequada, deve
                        │ Discovery Freeze
                        ▼
               01 Pesquisa e Viabilidade
+                       │ aprovação humana
                        ▼
               02 Briefing e Escopo
+                       │ aprovação humana
                        ▼
               03 Visão de Product Owner
-                       │
-                       ├───────────────┐
-                       ▼               │
-             Princípios de UX/UI       │
-                       │               │
-             ┌─────────┴─────────┐     │
-             ▼                   ▼     │
+                       │ aprovação humana
+                       ▼
+             Princípios de UX/UI
+                       │ aprovação humana
+             ┌─────────┴─────────┐
+             ▼                   ▼
       04 Direção de UI      05 Especificação UX
       + Design System       + jornadas/user stories
              └─────────┬─────────┘
+                       │ aprovação humana
                        ▼
               06 Técnicas de Desenvolvimento
+                       │ aprovação humana
                        ▼
-              07 Arquitetura e Engenharia
+              07 Engenharia e Arquitetura
+                       │
                        ▼
-                  MAE / MFEE
+          inventário de necessidades técnicas
+                       │
+                       ▼
+       entrevista + pesquisa de infraestrutura
+                       │ aprovação humana
+                       ▼
+       Infraestrutura e Plano de Fundação
+                       │
                        ▼
               08 Backlog Canônico
                        ▼
@@ -1144,9 +2428,13 @@ Se o runtime demonstrar que a decisão anterior é inviável ou inadequada, deve
                        ▼
                      CODEX
                        ▼
+               FND — Fundação / Setup
+                       ▼
               implementação por fatia
                        ▼
                testes + quality gates
+                       ▼
+          skills/checks de consistência
                        ▼
               documentação derivada
                        ▼
@@ -1157,26 +2445,42 @@ Se o runtime demonstrar que a decisão anterior é inviável ou inadequada, deve
                   promoção
                        ▼
              rastreabilidade atualizada
+                       │
+                       ▼
+         conhecimento reutilizável detectado?
+                 │              │
+                não            sim
+                 │              ▼
+                 │       Issue / check / skill
+                 └──────────────┘
 ```
 
 ---
 
-# 26. Resultado esperado
+# 27. Resultado esperado
 
 Este processo existe para produzir software em que:
 
 - a intenção do produto não dependa da memória da conversa com a IA;
+- documentos sejam gerados e aprovados progressivamente, sem propagação silenciosa de erro;
 - decisões de experiência possuam princípios claros;
 - UI e UX tenham identidade própria;
 - tarefas mentais e jornadas sejam especificadas separadamente;
-- arquitetura seja consequência de requisitos;
+- técnicas de desenvolvimento sejam distinguidas de forças de engenharia;
+- engenharia preceda escolhas arquiteturais;
+- arquitetura defina modelo, fronteiras e estrutura do repositório por justificativa, não por hábito;
+- infraestrutura seja pesquisada e aprovada depois do dimensionamento arquitetural;
+- custo, contratação e credenciais permaneçam sob controle humano;
 - o backlog possua origem documental;
+- a Fundação prepare e prove o ambiente antes das funcionalidades;
 - testes comprovem critérios de aceite;
 - documentação evolua junto com o código;
-- MAE e MFEE governem novas gerações documentais sem terem sua lógica interna duplicada;
+- skills e agents portáveis mantenham consistência, conformidade e aprendizado sem depender de frameworks privados;
+- conhecimento recorrente possa virar Issue, check, teste, runbook ou skill reutilizável;
+- referências visuais sejam traduzidas em critérios objetivos sem apagar a identidade do produto;
 - staging produza evidência operacional;
 - a IA consiga trabalhar com autonomia sem inventar silenciosamente o produto.
 
 A metodologia pode ser resumida em uma frase:
 
-> **A IA não recebe apenas uma tarefa para programar; ela recebe um sistema de decisões canônicas que transforma intenção humana em software verificável.**
+> **A IA não recebe apenas uma tarefa para programar; ela recebe um sistema de decisões canônicas que transforma intenção humana em software verificável, operável e progressivamente mais inteligente.**
