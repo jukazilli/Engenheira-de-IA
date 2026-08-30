@@ -2,7 +2,7 @@
 document_id: DOC-05
 title: Especificação de UX
 status: canonical-example
-version: 1.0.0
+version: 1.1.0
 depends_on:
   - DOC-04
   - Principios_de_UX_UI
@@ -47,7 +47,7 @@ definir nome/período/instrutor
    ↓
 selecionar público/perfis
    ↓
-Engine de atribuição sugere trilhas compatíveis
+regra de atribuição sugere trilhas compatíveis
    ↓
 consultor revisa
    ↓

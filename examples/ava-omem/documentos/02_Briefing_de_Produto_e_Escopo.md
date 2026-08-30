@@ -2,7 +2,7 @@
 document_id: DOC-02
 title: Briefing de Produto e Escopo
 status: canonical-example
-version: 1.0.0
+version: 1.1.0
 depends_on:
   - DOC-01
 ---
@@ -123,9 +123,8 @@ Aplicação web responsiva, com prioridade para desktop e tablet na administraç
 - a consultoria é dona do conteúdo;
 - o mesmo curso pode atender vários clientes;
 - o Beta terá volume inicial controlado;
-- infraestrutura deve favorecer serviços gerenciados;
-- qualquer recurso pago exige aprovação humana durante a Fundação;
-- integrações futuras não justificam abstrações prematuras no Beta.
+- integrações futuras não justificam abstrações prematuras no Beta;
+- decisões de stack, provider, custo e modelo operacional de infraestrutura serão tomadas nas camadas técnicas correspondentes, depois do dimensionamento de engenharia.
 
 ## Critérios macro de sucesso
 

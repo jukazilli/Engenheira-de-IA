@@ -54,8 +54,8 @@ TECH_STACK_STATUS: canonical; compatible with approved infrastructure
 CURRENT_FOUNDATION_STATUS: not_started
 BACKLOG_STATUS: canonical; first milestone M0
 NEXT_EXECUTABLE_ITEM: FND-001
-BLOCKERS: none for local repository initialization
-PROPOSED_FIRST_SLICE: FND-001 — initialize monorepo structure and verify workspace/build boundaries
+BLOCKERS: none for repository skeleton
+PROPOSED_FIRST_SLICE: FND-001 — create the architecture-approved repository skeleton only
 ```
 
 ## Autorização humana
@@ -71,15 +71,15 @@ O Codex deve:
 ```text
 reler FND-001
    ↓
-consultar D06, D07 e Visão do Tech Lead
+consultar Documento 07
    ↓
 inspecionar repo atual
    ↓
-criar somente a estrutura prevista pela arquitetura
+criar somente o esqueleto estrutural previsto pela arquitetura
    ↓
-materializar workspace com a tecnologia aprovada
+não instalar stack/toolchain ainda
    ↓
-executar instalação/build/checks aplicáveis
+revisar boundaries e árvore
    ↓
 auto-revisar diff
    ↓
@@ -88,9 +88,62 @@ atualizar rastreabilidade
 registrar evidência
 ```
 
+A Visão do Tech Lead já existe, mas a materialização de Node, pnpm, TypeScript, React/Vite e Fastify acontece no **FND-002**, conforme o backlog. Isso evita misturar a decisão estrutural do repositório com a instalação da stack.
+
 Ele não deve avançar para `FND-005`, por exemplo, apenas porque consegue abrir o painel do provider. Dependências do backlog continuam governando a execução.
 
 Também não pode substituir pnpm, React/Vite, Fastify ou outra decisão canônica apenas porque conhece uma alternativa.
+
+## Exemplo de evidência após FND-001
+
+```text
+FND-001
+Implementation:
+- apps/web/
+- apps/api/
+- packages/domain/
+- packages/contracts/
+- infra/
+- tooling/
+
+Checks:
+- repository tree review
+- architecture conformance review
+
+Evidence:
+- commit <sha>
+- diff <ref>
+
+Status: Validated / Done conforme gates do item
+```
+
+`pnpm-workspace.yaml` e builds ainda não pertencem a essa evidência. Eles entram em `FND-002`.
+
+## Execução esperada — FND-002
+
+Depois que `FND-001` estiver validado, o próximo item materializa a Visão do Tech Lead:
+
+```text
+FND-002
+   ↓
+consultar D06 + Visão do Tech Lead
+   ↓
+fixar Node 24 LTS + pnpm
+   ↓
+configurar workspace
+   ↓
+TypeScript strict
+   ↓
+React/Vite web + Fastify API
+   ↓
+lockfile
+   ↓
+clean install + build mínimo
+   ↓
+evidência
+```
+
+Somente a partir daí os quality gates concretos de `FND-003` podem ser configurados sobre uma toolchain reproduzível.
 
 ## Exemplo de interação quando surge autenticação externa
 
@@ -132,39 +185,6 @@ ACTION_REQUIRED: explicit approval before creation
 ```
 
 Sem aprovação, o item fica `Blocked`; não é contornado por escolha silenciosa de outro serviço.
-
-## Atualização da matriz durante a Fundação
-
-Depois de validar `FND-001`, uma linha pode evoluir de:
-
-```text
-FND-001 | implementação — | testes — | evidência — | Planned
-```
-
-para algo como:
-
-```text
-FND-001
-Implementation:
-- pnpm-workspace.yaml
-- apps/web
-- apps/api
-- packages/domain
-- packages/contracts
-
-Tests:
-- clean install
-- workspace build smoke
-- boundary check
-
-Evidence:
-- commit <sha>
-- CI <run, quando disponível>
-
-Status: Validated / Done conforme gates do projeto
-```
-
-A atualização deve refletir o que aconteceu, não o que o agente pretende fazer.
 
 ## Quando a Fundação termina
 

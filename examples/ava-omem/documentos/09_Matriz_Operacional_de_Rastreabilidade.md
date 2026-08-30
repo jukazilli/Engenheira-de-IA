@@ -2,7 +2,7 @@
 document_id: DOC-09
 title: Matriz Operacional de Rastreabilidade
 status: canonical-example
-version: 1.1.0
+version: 1.2.0
 depends_on:
   - DOC-08
 ---
@@ -23,8 +23,8 @@ Infra → Infraestrutura e Plano de Fundação
 
 | ID | Origem | Requisito | Implementação | Testes | Evidência | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| FND-001 | D07, TL | Inicializar monorepo | — | — | — | Planned |
-| FND-002 | D06, TL | Fixar stack/toolchain | — | — | — | Planned |
+| FND-001 | D07 | Estrutura arquitetural do monorepo | — | — | — | Planned |
+| FND-002 | D06, TL | Stack, workspace e toolchain | — | — | — | Planned |
 | FND-003 | D06, TL | Quality gates locais | — | — | — | Planned |
 | FND-004 | D06, TL, Infra | Configurar CI | — | — | — | Planned |
 | FND-005 | D07, TL, Infra | Banco/Auth staging | — | — | — | Planned |
@@ -55,31 +55,31 @@ Infra → Infraestrutura e Plano de Fundação
 
 ## Como a matriz evolui
 
-Exemplo depois da execução de uma fatia:
+Exemplo depois da execução de `FND-001`:
 
 ```text
 ID: FND-001
-Implementação:
-- pnpm-workspace.yaml
-- apps/web
-- apps/api
-- packages/domain
-- packages/contracts
+Implementation:
+- apps/web/
+- apps/api/
+- packages/domain/
+- packages/contracts/
+- infra/
+- tooling/
 
-Testes:
-- workspace install
-- build smoke
-- boundary check
+Tests/checks:
+- repository tree review
+- architecture conformance review
 
-Evidência:
-- CI <run>
+Evidence:
 - commit <sha>
+- diff <ref>
 
 Status:
 Validated
 ```
 
-O fato de o exemplo usar `pnpm-workspace.yaml` é rastreável à decisão `TL-TOOL-001` da Visão do Tech Lead; a matriz não escolheu essa tecnologia por conta própria.
+`pnpm-workspace.yaml`, Node, TypeScript, React/Vite e Fastify ainda não aparecem como evidência de `FND-001`; eles pertencem a `FND-002`, cuja origem inclui a Visão do Tech Lead.
 
 Somente após todos os gates definidos para o item e a evidência necessária é que o status pode avançar para `Done`.
 

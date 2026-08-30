@@ -2,7 +2,7 @@
 document_id: DOC-08
 title: Backlog Canônico, Rastreabilidade e Plano de Entrega
 status: canonical-example
-version: 1.1.0
+version: 1.2.0
 depends_on:
   - DOC-06
   - DOC-07
@@ -36,44 +36,47 @@ Done
 
 # Fundação
 
-## FND-001 — Inicializar monorepo
+## FND-001 — Inicializar estrutura arquitetural do monorepo
 
-**Origem:** DOC-07, TECH-LEAD-VISION  
-**Objetivo:** criar estrutura física alinhada à arquitetura e preparada para a stack aprovada.
+**Origem:** DOC-07  
+**Objetivo:** criar o esqueleto físico definido pela arquitetura sem antecipar a instalação da toolchain, que pertence ao item seguinte.
 
 ### Critérios de aceite
 
-- `apps/web` criado;
-- `apps/api` criado;
-- `packages/domain`, `packages/contracts`, `packages/design-tokens` e config compartilhada criados quando necessários;
-- packages compartilhados respeitam boundaries;
-- workspace funciona com instalação única;
-- estrutura documentada no README técnico do projeto.
+- `apps/web` e `apps/api` existem como superfícies separadas;
+- `packages/domain`, `packages/contracts`, `packages/design-tokens` e `packages/config` são criados quando previstos pela estrutura aprovada;
+- `/infra`, `/tooling` e `/docs` possuem lugar explícito quando aplicáveis;
+- nenhum diretório provider-specific é introduzido como dependência estrutural do domínio;
+- boundaries e ownership lógico do Documento 07 podem ser reconhecidos pela árvore;
+- nenhuma stack alternativa é escolhida durante este item.
 
 ### Testes/evidência
 
-- instalação limpa;
-- build mínimo dos apps;
-- boundary check inicial.
+- inspeção/diff da árvore;
+- revisão de conformidade com o Documento 07;
+- commit pequeno contendo apenas o esqueleto arquitetural.
 
 **Dependências:** nenhuma.
 
 ---
 
-## FND-002 — Fixar stack e toolchain
+## FND-002 — Fixar stack, workspace e toolchain
 
 **Origem:** DOC-06, TECH-LEAD-VISION  
-**Objetivo:** tornar o ambiente reproduzível e materializar as decisões tecnológicas aprovadas.
+**Objetivo:** tornar o ambiente reproduzível e materializar as decisões tecnológicas aprovadas sobre a estrutura criada em FND-001.
 
 ### Critérios
 
 - Node.js 24 LTS fixado no mecanismo aprovado;
-- pnpm fixado;
+- pnpm fixado e workspace configurado;
 - TypeScript 6.x configurado em strict;
 - React 19.2/Vite 8 preparados em `apps/web`;
 - Fastify 5 preparado em `apps/api`;
+- packages compartilhados entram no workspace sem violar boundaries;
 - lockfile versionado;
 - ESLint/TypeScript ESLint e Prettier configurados;
+- clean install funciona;
+- build mínimo das superfícies iniciais funciona;
 - nenhuma biblioteca concorrente é adicionada para responsabilidade já canonizada.
 
 **Dependência:** FND-001.
@@ -524,4 +527,4 @@ OBS-001 → OBS-002 → CERT-001
 
 ## Primeira ação executável
 
-No estado inicial deste exemplo, o primeiro item elegível é `FND-001`. Nenhuma funcionalidade de produto deve ser marcada como iniciada antes da Fundação mínima ou de exceção explicitamente aprovada.
+No estado inicial deste exemplo, o primeiro item elegível é `FND-001`. Ele cria somente o esqueleto arquitetural. A toolchain só é materializada em `FND-002`, preservando a separação `Arquitetura → Visão do Tech Lead → Fundação`.
