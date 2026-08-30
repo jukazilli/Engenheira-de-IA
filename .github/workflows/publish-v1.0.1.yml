@@ -1,0 +1,45 @@
+name: Publish v1.0.1
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.event.head_commit.message == 'chore: publish v1.0.1 release'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.0.1 \
+            --repo "${{ github.repository }}" \
+            --target "56baf072843a5daf21b5c2e182672f54a9dedf7f" \
+            --title "Processo de Desenvolvimento com IA Assistida v1.0.1" \
+            --notes-file - <<'EOF'
+          ## v1.0.1
+
+          Esta release consolida a primeira evolução incremental do processo após a v1.0.0.
+
+          ### Principais evoluções
+
+          - adiciona o protocolo de ativação da Engine no ChatGPT e o handoff formal para o Codex;
+          - reforça o Documento 06 com regras de legibilidade universal, Clean Code, naming, reutilização, performance, testes e qualidade de código produzido por humanos ou IA;
+          - introduz a Visão do Tech Lead como ponte entre Engenharia/Arquitetura e Infraestrutura;
+          - separa explicitamente Técnicas, Engenharia, Arquitetura, seleção tecnológica, Infraestrutura, Backlog e Fundação;
+          - adiciona o exemplo prático completo do AVA OMEM;
+          - reconcilia o exemplo com a nova Visão do Tech Lead, incluindo stack, toolchain e contratos de uso;
+          - refina a precedência entre documentos e a rastreabilidade dos itens FND;
+          - preserva o README canônico como fonte normativa única da metodologia.
+
+          ### Compatibilidade e governança
+
+          O processo continua baseado em documentação canônica aprovada progressivamente, gates humanos, rastreabilidade, staging/evidência e execução pelo Codex sem decisões silenciosas fora da camada responsável.
+
+          **Base da release:** `56baf072843a5daf21b5c2e182672f54a9dedf7f`
+          EOF
