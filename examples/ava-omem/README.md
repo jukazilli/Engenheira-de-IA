@@ -22,7 +22,7 @@ Nada desta pasta altera as regras da Engine. Se houver conflito, o `README.md` d
 ## Como ler este exemplo
 
 1. Comece por [`00_Conversa_Simulada_Discovery_ate_Handoff.md`](./00_Conversa_Simulada_Discovery_ate_Handoff.md). Ele mostra o Discovery, a ativação da Engine, a revisão humana e os comandos de canonização.
-2. Consulte a pasta [`documentos/`](./documentos/) para ver como ficaram os artefatos aprovados do projeto fictício.
+2. Consulte a pasta [`documentos/`](./documentos/) para ver como ficaram os artefatos aprovados do projeto fictício. Observe especialmente a passagem `06 Técnicas → 07 Engenharia e Arquitetura → Visão do Tech Lead → Infraestrutura`.
 3. Termine em [`10_Handoff_para_Codex.md`](./10_Handoff_para_Codex.md) para ver como a documentação passa do ChatGPT para o ambiente de execução.
 
 ## Estrutura
@@ -41,6 +41,7 @@ examples/ava-omem/
     ├── 05_Especificacao_de_UX.md
     ├── 06_Tecnicas_de_Desenvolvimento.md
     ├── 07_Engenharia_e_Arquitetura.md
+    ├── Visao_do_Tech_Lead.md
     ├── Infraestrutura_e_Plano_de_Fundacao.md
     ├── 08_Backlog_Canonico_Rastreabilidade_e_Plano_de_Entrega.md
     └── 09_Matriz_Operacional_de_Rastreabilidade.md
@@ -48,7 +49,7 @@ examples/ava-omem/
 
 ## O que este exemplo demonstra
 
-O objetivo não é sugerir que todo AVA deva possuir esta arquitetura ou esta infraestrutura. O objetivo é mostrar o **mecanismo de raciocínio e aprovação**:
+O objetivo não é sugerir que todo AVA deva possuir esta arquitetura, esta stack ou esta infraestrutura. O objetivo é mostrar o **mecanismo de raciocínio e aprovação**:
 
 ```text
 Discovery
@@ -66,6 +67,22 @@ humano aprova e manda gerar
 .md canônico
    ↓
 próxima camada
+```
+
+Na parte técnica, o exemplo também demonstra a separação de responsabilidades:
+
+```text
+06 Técnicas
+→ como o código deve ser escrito
+
+07 Engenharia e Arquitetura
+→ o que o sistema precisa suportar e como será estruturado
+
+Visão do Tech Lead
+→ com quais linguagens, runtimes, frameworks, bibliotecas e ferramentas será implementado
+
+Infraestrutura
+→ onde a stack aprovada será executada
 ```
 
 No exemplo, nenhuma etapa posterior é tratada como pronta antes da aprovação da camada anterior. Isso é intencional.

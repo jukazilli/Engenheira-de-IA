@@ -292,7 +292,9 @@ Prepare as Técnicas de Desenvolvimento seguindo todas as regras da Engine.
 
 ## ChatGPT
 
-A proposta fixa TypeScript em modo estrito, código técnico em inglês, lint/format/typecheck/testes obrigatórios, regras de naming, Clean Code, reaproveitamento antes de criação, testes de regressão para bugs, migrations versionadas e revisão obrigatória do próprio diff. Também define que bibliotecas precisam de justificativa e que comentários explicam contexto, não sintaxe.
+A proposta não escolhe ainda a stack. Ela define o contrato que qualquer stack deverá cumprir: type safety/strictness, código técnico em inglês, lint/format/verificação estática/testes automatizados, regras de naming, Clean Code, reaproveitamento antes de criação, regressão para bugs recorríveis, migrations versionadas, tratamento explícito de erros, dependências justificadas e revisão obrigatória do próprio diff.
+
+Também fica explícito que linguagem, runtime, package manager, frameworks e bibliotecas concretas serão escolhidos posteriormente pela Visão do Tech Lead, depois que a arquitetura estiver aprovada.
 
 ## Usuário
 
@@ -308,9 +310,11 @@ Agora faça Engenharia e Arquitetura. Quero que você avalie primeiro o que o si
 
 ## ChatGPT
 
-Forças identificadas: multi-tenant corporativo, segregação forte entre clientes, crescimento de catálogo/conteúdo, trilhas reutilizáveis, auditoria de progresso, upload/material externo, notificações e futuras integrações com OMEM. O Beta será mantido por equipe pequena, então baixa complexidade operacional é prioridade.
+Forças identificadas: multi-tenant corporativo, segregação forte entre clientes, crescimento de catálogo/conteúdo, trilhas reutilizáveis, auditoria de progresso, upload/material externo, notificações, futura integração com OMEM, deploy independente de web e API e operação por equipe pequena.
 
-Arquitetura recomendada: modular monolith com frontend web e API TypeScript, monorepo para compartilhar contratos e domínio, PostgreSQL relacional e separação explícita de tenant. Microservices são rejeitados no Beta.
+Comparando alternativas, a recomendação é **Modular Monolith com web e API separadas dentro de um monorepo**. Microservices são rejeitados no Beta. O domínio fica isolado de frameworks/providers e integrações entram por adapters.
+
+A arquitetura exige persistência relacional, contratos explícitos e validação de boundaries, mas não escolhe TypeScript, React, Fastify, PostgreSQL, Supabase ou qualquer provider neste momento. Ela produz necessidades `TL-NEED-*` para a seleção tecnológica e `INF-NEED-*` para infraestrutura.
 
 ## Usuário
 
@@ -330,11 +334,75 @@ Aprovado. Gere o Documento 07.
 
 ---
 
-# 9. Infraestrutura — entrevista humana
+# 9. Visão do Tech Lead — seleção da stack
+
+## Usuário
+
+Agora consuma as Técnicas e a Engenharia/Arquitetura e proponha a Visão do Tech Lead. Quero que você pesquise as tecnologias atuais antes de escolher. Não gere o arquivo ainda.
 
 ## ChatGPT
 
-Antes de escolher provedores preciso da entrevista de infraestrutura.
+Com base em D06 + D07, a stack precisa privilegiar type safety, contratos compartilhados, domínio independente de framework, baixo custo cognitivo para equipe pequena, API stateless e builds separados de web/API.
+
+A pesquisa atual em documentação oficial aponta, entre outras opções compatíveis, para Node.js 24 LTS, TypeScript 6, React 19.2, Vite 8, React Router 8, Fastify 5, Zod 4, Vitest e Playwright.
+
+Proposta:
+
+```text
+TypeScript 6.x
+Node.js 24 LTS
+
+Web:
+React 19.2
+Vite 8
+React Router 8
+TanStack Query para server-state
+React Hook Form somente quando formulários justificarem
+
+API:
+Fastify 5
+Zod 4 nas boundaries
+PostgreSQL como engine relacional
+pg em adapters/repositories
+
+Tooling:
+pnpm workspaces
+ESLint + TypeScript ESLint
+Prettier
+Vitest
+Testing Library
+Playwright
+```
+
+Eu não adicionaria Next.js porque não existe requisito de SSR/RSC no Beta e a arquitetura já separa API. Também não adicionaria NestJS, ORM completo, Turborepo/Nx ou state manager global sem necessidade demonstrada.
+
+A escolha de provider de PostgreSQL/Auth/Storage ainda pertence à próxima etapa de Infraestrutura.
+
+## Usuário
+
+Quero mesmo uma stack simples. Se o Supabase for escolhido depois, não quero o domínio inteiro dependente dele.
+
+## ChatGPT
+
+Correto. A Visão do Tech Lead fixa ports/adapters: qualquer SDK de provider ficará restrito às boundaries de infraestrutura. `packages/domain` continuará sem dependência de Supabase, banco ou HTTP.
+
+## Usuário
+
+Aprovado. Gere a Visão do Tech Lead.
+
+## Resultado
+
+`documentos/Visao_do_Tech_Lead.md`
+
+Somente agora a seleção de infraestrutura é elegível com uma stack concreta para validar compatibilidade.
+
+---
+
+# 10. Infraestrutura — entrevista humana e compatibilidade
+
+## ChatGPT
+
+Antes de escolher providers preciso da entrevista de infraestrutura.
 
 1. O produto pode virar comercial?  
 2. Você quer começar sem custo quando possível?  
@@ -356,19 +424,41 @@ Antes de escolher provedores preciso da entrevista de infraestrutura.
 
 ## ChatGPT
 
-Com essas respostas, pesquiso opções atuais e comparo custo, limites e aderência. A recomendação de exemplo usa serviços gerenciados e separa claramente o que pode iniciar em free tier do que precisa ser reavaliado antes da produção.
+Com essas respostas e com a stack já aprovada, comparo providers atuais não apenas por preço, mas também por compatibilidade.
+
+A composição recomendada do exemplo é:
+
+```text
+GitHub + GitHub Actions
+Cloudflare Pages → React/Vite web
+Google Cloud Run → Node/Fastify API
+Supabase → PostgreSQL/Auth/Storage
+Resend → e-mail transacional
+```
+
+Cloud Run é tratado como potencialmente cobrável mesmo com free tier; criação depende de aprovação humana. A pesquisa também confirma regiões aplicáveis em São Paulo para reduzir distância operacional quando coerente.
+
+A escolha de Supabase exige apenas uma reconciliação localizada da Visão do Tech Lead: `@supabase/supabase-js` passa a ser autorizado nos adapters de Auth/Storage, e nunca como dependência do domínio. O SDK de Resend segue a mesma regra no módulo de Notifications.
 
 ## Usuário
 
-Aprovado. Gere o Plano de Infraestrutura e Fundação.
+Aprovado. Atualize a mesma Visão do Tech Lead apenas com essa reconciliação de adapters e depois gere o Plano de Infraestrutura e Fundação. Não crie uma segunda versão concorrente da Visão.
+
+## ChatGPT
+
+A Visão do Tech Lead é reconciliada no mesmo arquivo e o plano de infraestrutura é canonizado com providers concretos. O FND não ficará responsável por escolher entre Workers, Cloud Run ou outra alternativa; ele executará a decisão já aprovada.
 
 ## Resultado
+
+`documentos/Visao_do_Tech_Lead.md` é atualizado no mesmo artefato.
+
+É canonizado:
 
 `documentos/Infraestrutura_e_Plano_de_Fundacao.md`
 
 ---
 
-# 10. Backlog e Matriz
+# 11. Backlog e Matriz
 
 ## Usuário
 
@@ -378,7 +468,16 @@ Agora transforme tudo em backlog. Não quero item genérico tipo “criar AVA”
 
 O backlog é dividido em FND, AUTH, TEN, CNT, TRL, CLS, LRN, ASM, CERT e OBS. Cada item possui origem, dependências, critérios de aceite, testes e evidência.
 
-A primeira sequência elegível é Fundação: repo/toolchain → CI → banco/migrations → auth/tenant baseline → staging → smoke tests.
+As decisões concretas de Fundação agora são rastreáveis:
+
+```text
+repo/boundaries         → D07
+qualidade de código     → D06
+stack/toolchain         → Visão do Tech Lead
+providers/ambientes     → Infraestrutura
+```
+
+A primeira sequência elegível é Fundação: repo → stack/toolchain → quality gates → CI → banco/migrations + web/API/e-mail staging → smoke consolidado.
 
 ## Usuário
 
@@ -394,7 +493,7 @@ Agora gere a Matriz Operacional com o estado inicial real. Nada deve aparecer co
 
 ## ChatGPT
 
-Correto. A matriz começa com itens `Planned`, sem inventar implementação, teste ou evidência.
+Correto. A matriz começa com itens `Planned`, sem inventar implementação, teste ou evidência. Os itens FND também registram `TL` como origem quando uma decisão tecnológica veio da Visão do Tech Lead.
 
 ## Usuário
 
@@ -406,15 +505,17 @@ Aprovado. Gere o Documento 09.
 
 ---
 
-# 11. Encerramento da fase documental
+# 12. Encerramento da fase documental
 
 ## ChatGPT
 
 ```text
 BASELINE_STATUS: CANONICAL
 DOCUMENTS_01_09: approved
+UX_UI_PRINCIPLES: approved
+TECH_LEAD_VISION: approved_and_reconciled
 INFRASTRUCTURE_PLAN: approved
-BACKLOG: ready for execution
+BACKLOG: ready_for_execution
 MATRIX: initialized
 NEXT_ENVIRONMENT: Codex
 NEXT_STAGE: Foundation / FND

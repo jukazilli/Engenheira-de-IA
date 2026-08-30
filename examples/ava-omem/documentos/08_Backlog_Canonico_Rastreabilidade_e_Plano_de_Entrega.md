@@ -2,10 +2,11 @@
 document_id: DOC-08
 title: Backlog Canônico, Rastreabilidade e Plano de Entrega
 status: canonical-example
-version: 1.0.0
+version: 1.1.0
 depends_on:
   - DOC-06
   - DOC-07
+  - TECH-LEAD-VISION
   - Infraestrutura_e_Plano_de_Fundacao
 ---
 
@@ -17,7 +18,8 @@ depends_on:
 - nenhum item pode ser considerado `Done` sem testes/evidência aplicáveis;
 - FND prepara a base antes das funcionalidades;
 - dependências precisam ser respeitadas;
-- itens devem ser pequenos o suficiente para revisão e prova.
+- itens devem ser pequenos o suficiente para revisão e prova;
+- tecnologia concreta só aparece no backlog quando possui origem na Visão do Tech Lead ou na Infraestrutura aprovada.
 
 ## Estados
 
@@ -36,14 +38,15 @@ Done
 
 ## FND-001 — Inicializar monorepo
 
-**Origem:** DOC-06, DOC-07  
-**Objetivo:** criar estrutura física alinhada à arquitetura.
+**Origem:** DOC-07, TECH-LEAD-VISION  
+**Objetivo:** criar estrutura física alinhada à arquitetura e preparada para a stack aprovada.
 
 ### Critérios de aceite
 
 - `apps/web` criado;
 - `apps/api` criado;
-- packages compartilhados criados sem dependências indevidas;
+- `packages/domain`, `packages/contracts`, `packages/design-tokens` e config compartilhada criados quando necessários;
+- packages compartilhados respeitam boundaries;
 - workspace funciona com instalação única;
 - estrutura documentada no README técnico do projeto.
 
@@ -57,24 +60,29 @@ Done
 
 ---
 
-## FND-002 — Fixar toolchain
+## FND-002 — Fixar stack e toolchain
 
-**Origem:** DOC-06  
-**Objetivo:** garantir reprodutibilidade.
+**Origem:** DOC-06, TECH-LEAD-VISION  
+**Objetivo:** tornar o ambiente reproduzível e materializar as decisões tecnológicas aprovadas.
 
 ### Critérios
 
-- Node LTS definido;
+- Node.js 24 LTS fixado no mecanismo aprovado;
 - pnpm fixado;
+- TypeScript 6.x configurado em strict;
+- React 19.2/Vite 8 preparados em `apps/web`;
+- Fastify 5 preparado em `apps/api`;
 - lockfile versionado;
-- TypeScript strict;
-- formatter e lint configurados.
+- ESLint/TypeScript ESLint e Prettier configurados;
+- nenhuma biblioteca concorrente é adicionada para responsabilidade já canonizada.
 
 **Dependência:** FND-001.
 
 ---
 
 ## FND-003 — Criar quality gates locais
+
+**Origem:** DOC-06, TECH-LEAD-VISION  
 
 ### Critérios
 
@@ -89,17 +97,25 @@ build
 check:boundaries
 ```
 
+- Vitest disponível para testes rápidos;
+- Playwright preparado quando o primeiro smoke/E2E for elegível;
+- gates falham de forma legível.
+
 **Dependência:** FND-002.
 
 ---
 
 ## FND-004 — Configurar CI
 
+**Origem:** DOC-06, TECH-LEAD-VISION, Infraestrutura  
+
 ### Critérios
 
-- pull/commit candidato executa gates;
+- GitHub Actions executa os gates definidos;
+- pull/commit candidato executa validações necessárias;
 - falha bloqueia promoção;
-- pipeline não imprime secrets.
+- pipeline não imprime secrets;
+- cache, se usado, não compromete reprodutibilidade.
 
 **Dependência:** FND-003.
 
@@ -107,13 +123,16 @@ check:boundaries
 
 ## FND-005 — Criar banco/auth de staging
 
-**Origem:** Infraestrutura  
-**Critérios:**
+**Origem:** DOC-07, TECH-LEAD-VISION, Infraestrutura  
 
-- projeto/instância aprovado pelo humano;
+### Critérios
+
+- projeto Supabase de staging aprovado pelo humano;
+- PostgreSQL/Auth disponíveis;
+- região e identificação do ambiente registradas;
 - credenciais não transitam pelo chat;
-- conexão da API validada;
-- ambiente identificado como staging.
+- conexão da API pelo mecanismo aprovado validada;
+- credencial administrativa não chega ao frontend.
 
 **Dependência:** FND-004.
 
@@ -121,13 +140,17 @@ check:boundaries
 
 ## FND-006 — Migrations baseline de identidade e tenant
 
+**Origem:** DOC-06, DOC-07, TECH-LEAD-VISION, Infraestrutura  
+
 ### Critérios
 
-- migrations versionadas;
+- migrations SQL versionadas;
+- mecanismo de aplicação compatível com Supabase e CI;
 - organizações e memberships modeladas;
 - constraints mínimas;
 - política de autorização inicial;
-- teste negativo cross-tenant.
+- teste negativo cross-tenant;
+- migration state reproduzível a partir do Git.
 
 **Dependência:** FND-005.
 
@@ -135,12 +158,16 @@ check:boundaries
 
 ## FND-007 — Publicar web em staging
 
+**Origem:** TECH-LEAD-VISION, Infraestrutura  
+
 ### Critérios
 
+- React/Vite build publicado no Cloudflare Pages;
 - HTTPS;
-- build imutável/reproduzível;
 - health/smoke page acessível;
-- variáveis públicas revisadas.
+- variáveis públicas revisadas;
+- nenhum secret presente no bundle;
+- deploy identificável por commit/SHA quando possível.
 
 **Dependência:** FND-004.
 
@@ -148,13 +175,18 @@ check:boundaries
 
 ## FND-008 — Publicar API em staging
 
+**Origem:** DOC-07, TECH-LEAD-VISION, Infraestrutura  
+
 ### Critérios
 
+- Node.js 24/Fastify publicado no Google Cloud Run;
 - health endpoint;
-- conexão autorizada com banco;
+- serviço stateless;
+- conexão autorizada com PostgreSQL;
 - secrets apenas no runtime;
-- logs básicos;
-- CORS/origins conforme ambiente.
+- logs estruturados mínimos;
+- CORS/origins conforme ambiente;
+- recurso potencialmente cobrável só é criado após gate humano.
 
 **Dependências:** FND-005, FND-006.
 
@@ -162,10 +194,13 @@ check:boundaries
 
 ## FND-009 — Configurar e-mail transacional de teste
 
+**Origem:** DOC-07, TECH-LEAD-VISION, Infraestrutura  
+
 ### Critérios
 
-- provider aprovado;
+- Resend aprovado/configurado;
 - domínio/remetente de teste validado;
+- SDK restrito ao adapter de Notifications;
 - secret armazenado fora do código;
 - mensagem de teste enviada sem expor credencial.
 
@@ -175,6 +210,8 @@ check:boundaries
 
 ## FND-010 — Smoke test da Fundação
 
+**Origem:** DOC-06, DOC-07, TECH-LEAD-VISION, Infraestrutura  
+
 ### Critérios
 
 - web acessível;
@@ -183,9 +220,12 @@ check:boundaries
 - migration state válido;
 - auth baseline funciona;
 - CI aprovado;
-- teste cross-tenant negativo passa.
+- teste cross-tenant negativo passa;
+- stack instalada corresponde à Visão do Tech Lead;
+- providers implantados correspondem à Infraestrutura aprovada;
+- logs mínimos estão acessíveis sem exposição de dados sensíveis.
 
-**Dependências:** FND-006, FND-007, FND-008.
+**Dependências:** FND-006, FND-007, FND-008, FND-009.
 
 ### Evidência
 
@@ -459,7 +499,11 @@ CI + staging + registro de execução.
 
 ```text
 M0 — Fundação
-FND-001 → FND-010
+FND-001 → FND-002 → FND-003 → FND-004
+                         ├→ FND-005 → FND-006 → FND-008
+                         ├→ FND-007
+                         └→ FND-009
+FND-006 + FND-007 + FND-008 + FND-009 → FND-010
 
 M1 — Identidade/Tenant
 AUTH-001 → TEN-001 → TEN-002 → TEN-003

@@ -10,7 +10,8 @@ Antes de abrir o Codex:
 - o repositório do projeto real já contém os `.md` canônicos;
 - o repositório foi clonado ou atualizado na máquina local;
 - o Codex está aberto na raiz do projeto;
-- ainda não existe permissão para escolher provedores pagos ou manipular credenciais humanas sem gate.
+- a Visão do Tech Lead foi aprovada e reconciliada com a Infraestrutura;
+- ainda não existe permissão para escolher stack/provider alternativo, criar recurso pago ou manipular credenciais humanas sem gate.
 
 ## Primeiro comando no Codex
 
@@ -21,6 +22,7 @@ Leia os documentos na ordem e precedência definidas pelo processo, com atençã
 
 - 06_Tecnicas_de_Desenvolvimento.md
 - 07_Engenharia_e_Arquitetura.md
+- Visao_do_Tech_Lead.md
 - Infraestrutura_e_Plano_de_Fundacao.md
 - 08_Backlog_Canonico_Rastreabilidade_e_Plano_de_Entrega.md
 - 09_Matriz_Operacional_de_Rastreabilidade.md
@@ -33,13 +35,14 @@ Primeiro responda somente com:
 
 DOCUMENTS_CONSUMED
 DOCUMENT_CONSISTENCY
+TECH_STACK_STATUS
 CURRENT_FOUNDATION_STATUS
 BACKLOG_STATUS
 NEXT_EXECUTABLE_ITEM
 BLOCKERS
 PROPOSED_FIRST_SLICE
 
-Não marque item como entregue sem evidência. Não escolha silenciosamente infraestrutura diferente da aprovada. Não peça senhas, tokens, chaves privadas ou secrets pelo chat.
+Não marque item como entregue sem evidência. Não escolha silenciosamente stack, biblioteca ou infraestrutura diferente da aprovada. Não peça senhas, tokens, chaves privadas ou secrets pelo chat.
 ```
 
 ## Resposta simulada do Codex
@@ -47,6 +50,7 @@ Não marque item como entregue sem evidência. Não escolha silenciosamente infr
 ```text
 DOCUMENTS_CONSUMED: complete
 DOCUMENT_CONSISTENCY: consistent for initial execution
+TECH_STACK_STATUS: canonical; compatible with approved infrastructure
 CURRENT_FOUNDATION_STATUS: not_started
 BACKLOG_STATUS: canonical; first milestone M0
 NEXT_EXECUTABLE_ITEM: FND-001
@@ -67,13 +71,13 @@ O Codex deve:
 ```text
 reler FND-001
    ↓
-consultar D06 e D07
+consultar D06, D07 e Visão do Tech Lead
    ↓
 inspecionar repo atual
    ↓
-criar a menor estrutura necessária
+criar somente a estrutura prevista pela arquitetura
    ↓
-configurar workspace mínimo
+materializar workspace com a tecnologia aprovada
    ↓
 executar instalação/build/checks aplicáveis
    ↓
@@ -85,6 +89,8 @@ registrar evidência
 ```
 
 Ele não deve avançar para `FND-005`, por exemplo, apenas porque consegue abrir o painel do provider. Dependências do backlog continuam governando a execução.
+
+Também não pode substituir pnpm, React/Vite, Fastify ou outra decisão canônica apenas porque conhece uma alternativa.
 
 ## Exemplo de interação quando surge autenticação externa
 
@@ -113,15 +119,15 @@ O agente continua somente na sessão autorizada e não copia credenciais para a 
 
 ## Exemplo de gate de custo
 
-Se o provider exigir upgrade:
+Neste exemplo, a criação do runtime Cloud Run deve ser tratada como potencialmente cobrável mesmo que exista free tier.
 
 ```text
 HUMAN_GATE_REQUIRED: billable_resource
-RESOURCE: <nome>
-PURPOSE: staging database / runtime / e-mail etc.
+RESOURCE: Cloud Run staging API
+PURPOSE: runtime da API Fastify
 CURRENT_COST_CLASSIFICATION: POTENTIALLY_BILLABLE
-KNOWN_PRICE: <valor pesquisado, se atual e confirmado>
-ALTERNATIVES: <opções>
+KNOWN_PRICE: conforme pesquisa atual da documentação oficial
+ALTERNATIVES: não trocar provider silenciosamente; qualquer alternativa exige reconciliação
 ACTION_REQUIRED: explicit approval before creation
 ```
 
@@ -168,6 +174,8 @@ O Codex executa `foundation-readiness` ou check equivalente e deve retornar algo
 FOUNDATION_STATUS: FND_READY
 
 repo_structure: validated
+tech_stack: validated
+approved_dependencies: validated
 locked_toolchain: validated
 quality_gates: validated
 ci: validated
@@ -175,6 +183,7 @@ database_migrations: validated
 auth_tenant_baseline: validated
 web_staging: validated
 api_staging: validated
+providers_match_infrastructure_plan: validated
 secrets_handling: validated
 observability_minimum: validated
 smoke_tests: validated
@@ -184,6 +193,26 @@ NEXT_ELIGIBLE_MILESTONE: M1 — Identity / Tenancy
 
 Se qualquer parte essencial estiver incompleta, o resultado deve ser `FND_PARTIAL` ou `FND_BLOCKED` com gaps concretos.
 
+## Exemplo de divergência tecnológica
+
+Suponha que durante `FND-002` o agente prefira instalar outro framework de API.
+
+O comportamento correto é:
+
+```text
+Visão do Tech Lead: Fastify 5
+        ↓
+Codex identifica preferência/alternativa
+        ↓
+NÃO instala silenciosamente
+        ↓
+existe restrição nova que torna Fastify inviável?
+        ├─ não → manter decisão canônica
+        └─ sim → bloquear item e devolver decisão ao fluxo documental
+```
+
+A implementação não possui precedência sobre a decisão tecnológica aprovada.
+
 ## Execução funcional
 
 Depois da Fundação:
@@ -191,7 +220,7 @@ Depois da Fundação:
 ### Usuário
 
 ```text
-Continue consumindo o backlog na ordem de dependências. Execute a próxima menor fatia elegível, começando por AUTH-001. Antes de codificar, releia os documentos de origem e aplique integralmente as Técnicas de Desenvolvimento.
+Continue consumindo o backlog na ordem de dependências. Execute a próxima menor fatia elegível, começando por AUTH-001. Antes de codificar, releia os documentos de origem, aplique integralmente as Técnicas de Desenvolvimento e respeite a Visão do Tech Lead.
 ```
 
 O ciclo passa a ser:
@@ -201,7 +230,11 @@ item do backlog
    ↓
 documentos de origem
    ↓
+D06 + arquitetura + stack quando aplicáveis
+   ↓
 código existente e padrões locais
+   ↓
+reuso antes de criação
    ↓
 implementação pequena
    ↓
@@ -255,4 +288,4 @@ Codex
 → Fundação + implementação + evidência
 ```
 
-A mensagem curta “consuma o backlog” só é segura porque, antes dela, o projeto já possui um sistema explícito de decisões, constraints, critérios de aceite e rastreabilidade.
+A mensagem curta “consuma o backlog” só é segura porque, antes dela, o projeto já possui um sistema explícito de decisões, constraints, stack, critérios de aceite e rastreabilidade.

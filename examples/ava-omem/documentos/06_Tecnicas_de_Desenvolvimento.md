@@ -2,9 +2,16 @@
 document_id: DOC-06
 title: Técnicas de Desenvolvimento
 status: canonical-example
-version: 1.0.0
+version: 1.1.0
 depends_on:
   - DOC-05
+governs:
+  - code-quality
+  - code-language
+  - naming
+  - testing-discipline
+  - dependency-policy
+  - review-discipline
 ---
 
 # 06 — Técnicas de Desenvolvimento
@@ -15,19 +22,23 @@ Definir como humanos e agentes devem escrever, revisar, testar e entregar códig
 
 Este documento é uma **restrição de execução**. Código gerado por IA não recebe exceção de qualidade.
 
-## Linguagem e toolchain
+Este documento define **as propriedades e práticas que a stack precisa sustentar**, mas não escolhe sozinho a stack concreta. Linguagens, runtimes, frameworks, package manager, bibliotecas e ferramentas específicas são definidos posteriormente em `Visao_do_Tech_Lead.md`, depois da aprovação do Documento 07.
 
-- TypeScript em modo estrito;
-- Node.js em versão LTS fixada pela Fundação;
-- `pnpm` com versão fixada;
-- lockfile obrigatório;
-- ESLint ou lint equivalente;
-- formatter automático;
-- typecheck separado do build;
+## Contrato de qualidade e toolchain
+
+Independentemente das tecnologias escolhidas depois pelo Tech Lead, o projeto exige:
+
+- type safety/strictness compatível com a linguagem adotada;
+- runtime e ferramentas com versões reproduzíveis;
+- um package manager canônico e lockfile obrigatório;
+- lint automatizado;
+- formatter automatizado;
+- typecheck ou verificação estática equivalente separada do build quando aplicável;
 - testes unitários e de integração;
-- Playwright para jornadas E2E críticas.
+- E2E para jornadas críticas;
+- comandos reproduzíveis para os quality gates.
 
-As versões exatas devem ser travadas no setup depois de validação da documentação oficial da versão adotada.
+A Visão do Tech Lead deve escolher ferramentas que materializem essas exigências. As versões exatas instaladas são travadas na Fundação depois de validação da documentação oficial e da matriz de compatibilidade aprovada.
 
 ## Idioma técnico
 
@@ -35,7 +46,7 @@ Código, nomes técnicos, testes, comentários e docstrings devem ser escritos e
 
 Textos visíveis ao usuário seguem a linguagem definida pela UX e podem estar em português.
 
-Exemplo:
+Exemplo conceitual:
 
 ```ts
 const pendingLessons = enrollment.lessons.filter((lesson) => !lesson.completed);
@@ -44,6 +55,8 @@ function canIssueCertificate(progress: TrainingProgress): boolean {
   return progress.requiredActivitiesCompleted && progress.passedAssessments;
 }
 ```
+
+O exemplo utiliza TypeScript apenas para ilustrar legibilidade; ele não é a decisão de linguagem deste documento.
 
 ## Naming
 
@@ -93,11 +106,14 @@ Biblioteca nova exige justificativa. Antes de instalar, verificar:
 
 - se a plataforma já resolve;
 - se o projeto já possui capacidade equivalente;
+- se a biblioteca está aprovada na Visão do Tech Lead para aquela responsabilidade;
 - manutenção e compatibilidade;
 - impacto de bundle/runtime;
 - segurança;
 - lock-in;
 - valor real para o projeto.
+
+Se uma necessidade exigir biblioteca ainda não prevista, o agente não escolhe oportunisticamente. Ele registra a necessidade e reconcilia `Visao_do_Tech_Lead.md` antes de tratar a dependência como novo padrão canônico.
 
 ## Tratamento de erros
 
@@ -133,7 +149,8 @@ Não sacrificar clareza por micro-otimização sem evidência.
 - migrations são revisáveis e reproduzíveis;
 - não alterar migration já aplicada em ambiente compartilhado para “corrigir histórico”;
 - mudanças destrutivas exigem estratégia explícita;
-- autorização e índices relevantes devem fazer parte da revisão do dado.
+- autorização e índices relevantes devem fazer parte da revisão do dado;
+- a ferramenta concreta de migration deve ser definida pelo Tech Lead e permanecer compatível com a infraestrutura aprovada.
 
 ## Testes
 
@@ -155,6 +172,8 @@ Jornadas críticas:
 - conclusão de aula/quiz;
 - visão restrita do gestor;
 - emissão de certificado.
+
+A ferramenta E2E concreta é definida na Visão do Tech Lead.
 
 ### Regressão
 
@@ -190,12 +209,13 @@ Antes de considerar a tarefa pronta, perguntar:
 - erros estão tratados?
 - testes cobrem comportamento e falhas relevantes?
 - a solução respeita boundaries?
+- usei somente dependências aprovadas para aquela responsabilidade?
 - existe impacto óbvio de performance?
 - outro engenheiro entenderia este diff sem a conversa original?
 
 ## Gates mínimos
 
-Quando aplicável:
+Quando aplicável, a stack selecionada deve fornecer comandos equivalentes a:
 
 ```text
 format:check
@@ -208,6 +228,8 @@ boundary checks
 E2E/smoke
 ```
 
+Os nomes concretos dos comandos podem variar, mas o contrato de qualidade não desaparece por causa da ferramenta escolhida.
+
 ## Definition of Done de código
 
 Uma alteração só pode avançar quando:
@@ -215,10 +237,11 @@ Uma alteração só pode avançar quando:
 - código técnico está em inglês;
 - naming é consistente;
 - não há duplicação evitável;
-- dependências novas possuem justificativa;
+- dependências novas possuem justificativa e aprovação tecnológica quando necessária;
 - testes necessários existem;
 - gates passam;
 - boundaries arquiteturais são respeitadas;
+- a stack e os contratos de uso definidos pelo Tech Lead são respeitados;
 - não existem segredos no código;
 - diff foi auto-revisado;
 - implementação pode ser compreendida por outro engenheiro sem depender do chat.
@@ -228,3 +251,21 @@ Uma alteração só pode avançar quando:
 A IA deve consultar documentação correspondente às versões realmente instaladas antes de usar APIs, configurações ou padrões que possam ter mudado.
 
 A velocidade de geração nunca possui precedência sobre a legibilidade e a sustentabilidade da base.
+
+## Relação com as próximas camadas
+
+```text
+DOC-06 — Técnicas
+como o código deve ser escrito
+        ↓
+DOC-07 — Engenharia e Arquitetura
+o que o sistema precisa suportar e como será estruturado
+        ↓
+Visão do Tech Lead
+quais tecnologias materializam D06 + D07
+        ↓
+Infraestrutura
+onde essa stack será executada
+```
+
+Este documento não deve ser alterado apenas para justificar uma biblioteca preferida. Se a stack não consegue cumprir estas técnicas, a escolha tecnológica deve ser reavaliada.

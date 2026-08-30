@@ -2,7 +2,7 @@
 document_id: DOC-09
 title: Matriz Operacional de Rastreabilidade
 status: canonical-example
-version: 1.0.0
+version: 1.1.0
 depends_on:
   - DOC-08
 ---
@@ -12,18 +12,27 @@ depends_on:
 > **Estado inicial:** nenhum código do produto foi implementado.  
 > **Regra:** a matriz não inventa implementação, teste ou evidência.
 
+Abreviações de origem usadas neste exemplo:
+
+```text
+D06   → Técnicas de Desenvolvimento
+D07   → Engenharia e Arquitetura
+TL    → Visão do Tech Lead
+Infra → Infraestrutura e Plano de Fundação
+```
+
 | ID | Origem | Requisito | Implementação | Testes | Evidência | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| FND-001 | D06, D07 | Inicializar monorepo | — | — | — | Planned |
-| FND-002 | D06 | Fixar toolchain | — | — | — | Planned |
-| FND-003 | D06 | Quality gates locais | — | — | — | Planned |
-| FND-004 | D06, Infra | Configurar CI | — | — | — | Planned |
-| FND-005 | Infra | Banco/Auth staging | — | — | — | Planned |
-| FND-006 | D07, Infra | Migrations e tenant baseline | — | — | — | Planned |
-| FND-007 | Infra | Web staging | — | — | — | Planned |
-| FND-008 | Infra | API staging | — | — | — | Planned |
-| FND-009 | Infra | E-mail transacional | — | — | — | Planned |
-| FND-010 | D06, D07, Infra | Smoke da Fundação | — | — | — | Planned |
+| FND-001 | D07, TL | Inicializar monorepo | — | — | — | Planned |
+| FND-002 | D06, TL | Fixar stack/toolchain | — | — | — | Planned |
+| FND-003 | D06, TL | Quality gates locais | — | — | — | Planned |
+| FND-004 | D06, TL, Infra | Configurar CI | — | — | — | Planned |
+| FND-005 | D07, TL, Infra | Banco/Auth staging | — | — | — | Planned |
+| FND-006 | D06, D07, TL, Infra | Migrations e tenant baseline | — | — | — | Planned |
+| FND-007 | TL, Infra | Web staging | — | — | — | Planned |
+| FND-008 | D07, TL, Infra | API staging | — | — | — | Planned |
+| FND-009 | D07, TL, Infra | E-mail transacional | — | — | — | Planned |
+| FND-010 | D06, D07, TL, Infra | Smoke da Fundação | — | — | — | Planned |
 | AUTH-001 | D02, D05 | Primeiro acesso por convite | — | — | — | Planned |
 | TEN-001 | D02, D05 | Criar empresa | — | — | — | Planned |
 | TEN-002 | D02, D03 | Módulos OMEM contratados | — | — | — | Planned |
@@ -70,12 +79,16 @@ Status:
 Validated
 ```
 
+O fato de o exemplo usar `pnpm-workspace.yaml` é rastreável à decisão `TL-TOOL-001` da Visão do Tech Lead; a matriz não escolheu essa tecnologia por conta própria.
+
 Somente após todos os gates definidos para o item e a evidência necessária é que o status pode avançar para `Done`.
 
 ## Regras de consistência
 
 - `Done` sem teste/evidência aplicável é divergência;
 - código existente com matriz `Planned` precisa de reconciliação;
+- stack instalada diferente da Visão do Tech Lead é divergência;
+- provider implantado diferente da Infraestrutura aprovada é divergência;
 - mudança de requisito deve atualizar backlog e matriz;
 - evidência aponta para execução real, não para promessa;
 - implementação não pode ser usada para reescrever silenciosamente a intenção original.
