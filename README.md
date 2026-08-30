@@ -2888,7 +2888,7 @@ O versionamento principal continua sendo o Git. Não criar burocracia documental
 Um documento pode ser considerado canônico quando:
 
 1. possui responsabilidade clara;
-2. não mistura hipóes com decisões sem identificá-las;
+2. não mistura hipóteses com decisões sem identificá-las;
 3. não contradiz documentos de precedência superior;
 4. possui escopo e não escopo compreensíveis;
 5. pode ser interpretado sem depender da conversa original de Discovery;
