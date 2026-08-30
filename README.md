@@ -3042,3 +3042,641 @@ Este processo existe para produzir software em que:
 A metodologia pode ser resumida em uma frase:
 
 > **A IA não recebe apenas uma tarefa para programar; ela recebe um sistema de decisões canônicas que transforma intenção humana em software verificável, operável e progressivamente mais inteligente.**
+
+---
+
+# 28. Ativação da Engine no ChatGPT e handoff para o Codex
+
+## Pergunta central
+
+> **Como carregar este processo integralmente em uma conversa do ChatGPT, conduzir a geração documental com aprovação humana e depois transferir a execução para o Codex sem perder as decisões canônicas?**
+
+## Objetivo
+
+Transformar este `README.md` em um protocolo reutilizável que possa ser carregado em uma conversa já iniciada com o ChatGPT e usado como **engine operacional do processo**.
+
+A ativação não instala software dentro do ChatGPT e não altera permanentemente o comportamento global da conta. Ela significa que, **na conversa atual**, o ChatGPT deve ler integralmente a versão canônica desta metodologia, construir um mapa operacional de seus tópicos e passar a utilizá-los como regras de condução do projeto.
+
+Em uma nova conversa, a chave de ativação deve ser executada novamente.
+
+## 28.1. Requisito mínimo para ativação
+
+A engine não exige que o usuário já possua requisitos completos, arquitetura ou documentação.
+
+O requisito mínimo é que tenha existido **Discovery conversacional suficiente para existir uma ideia de produto minimamente compreensível**.
+
+Exemplo de estágio aceitável:
+
+```text
+Usuário:
+"Quero criar uma comunidade onde pessoas possam registrar golpes que descobriram,
+discutir como eles funcionam e se manter informadas sobre novos golpes. O que acha?"
+
+ChatGPT:
+analisa problema, utilidade, riscos, referências e perguntas.
+
+Usuário:
+"E se adicionarmos X?"
+
+ChatGPT:
+explora impacto.
+
+Usuário:
+"E se mudarmos Y?"
+
+ChatGPT:
+compara alternativas.
+```
+
+Isso já pode fornecer matéria-prima suficiente para acionar o processo.
+
+Não é necessário que a conversa tenha produzido documentos.
+
+Se a engine concluir que ainda não existe contexto mínimo para produzir uma Pesquisa e Viabilidade responsável, ela deve permanecer em Discovery e fazer perguntas direcionadas. Ela **não deve inventar as respostas para conseguir avançar**.
+
+## 28.2. Fonte canônica da Engine
+
+A fonte pública oficial desta metodologia é:
+
+```text
+https://github.com/jukazilli/processo-de-desenvolvimento-de-software-com-ia-assistida
+```
+
+O arquivo operacional principal é:
+
+```text
+README.md
+```
+
+Ao ativar a engine, a IA deve acessar a fonte usando o melhor mecanismo disponível no ambiente, por exemplo:
+
+```text
+GitHub conectado
+        ou
+acesso ao repositório público
+        ou
+browser/web
+        ou
+clone read-only, quando o ambiente suportar
+```
+
+A IA não deve depender de uma lembrança parcial deste processo ou de um resumo antigo quando a fonte canônica estiver acessível.
+
+## 28.3. Leitura integral antes de qualquer execução
+
+O primeiro comportamento da engine é **ler o README inteiro**.
+
+Não é suficiente ler apenas o início, o índice ou os tópicos que pareçam relevantes naquele momento.
+
+Se o ambiente precisar paginar, buscar por faixas, abrir múltiplas partes do arquivo ou continuar a leitura em várias chamadas, a IA deve fazê-lo até chegar ao final.
+
+Depois da leitura, deve formar um índice operacional contendo, pelo menos:
+
+- qual pergunta cada tópico responde;
+- quando cada tópico deve ser consultado;
+- quais documentos dependem de quais decisões;
+- quais regras funcionam como gates humanos;
+- quais etapas podem produzir artefatos;
+- quais etapas apenas analisam e orientam;
+- quais regras possuem precedência em caso de conflito;
+- quando pesquisa web atual é obrigatória;
+- quando o Codex passa a ser o ambiente de execução.
+
+A IA não precisa reproduzir o README inteiro para o usuário após carregá-lo. Ela precisa **compreendê-lo integralmente e utilizá-lo sem reduzir suas regras a um resumo simplificado**.
+
+## 28.4. Fixação da versão durante a sessão
+
+Sempre que o mecanismo de acesso permitir, a IA deve identificar a versão da metodologia carregada por:
+
+- repositório;
+- branch;
+- commit SHA.
+
+Exemplo:
+
+```text
+ENGINE_SOURCE:
+jukazilli/processo-de-desenvolvimento-de-software-com-ia-assistida
+
+BRANCH:
+main
+
+LOADED_COMMIT:
+<sha>
+```
+
+Durante a mesma sessão, não deve trocar silenciosamente para outra versão do processo caso `main` seja atualizado.
+
+Se o usuário solicitar atualização da engine, a IA deve reler a versão mais recente, identificar o novo commit e reconciliar as diferenças antes de continuar.
+
+## 28.5. A ativação não cria documentos
+
+Girar a chave **não significa iniciar automaticamente a Pesquisa e Viabilidade**.
+
+A ativação apenas:
+
+```text
+acessa a metodologia
+        ↓
+lê integralmente
+        ↓
+forma mapa operacional
+        ↓
+recupera o contexto de Discovery da conversa
+        ↓
+identifica a fase atual
+        ↓
+fica pronta para receber o próximo comando do humano
+```
+
+Nenhum `.md` do projeto deve ser criado apenas porque a engine foi ativada.
+
+## 28.6. Handshake de ativação
+
+Depois de carregar integralmente a metodologia, a IA deve responder de forma curta e verificável, semelhante a:
+
+```text
+ENGINE_STATUS: ACTIVE
+SOURCE: jukazilli/processo-de-desenvolvimento-de-software-com-ia-assistida
+BRANCH: main
+COMMIT: <sha, quando disponível>
+PROCESS_LOADED: complete
+CURRENT_STAGE: Discovery
+CANONICAL_DOCUMENTS_CREATED: none
+NEXT_ELIGIBLE_ACTION: Pesquisa e Viabilidade, quando solicitada
+```
+
+Se o Discovery ainda estiver insuficiente:
+
+```text
+ENGINE_STATUS: ACTIVE
+PROCESS_LOADED: complete
+CURRENT_STAGE: Discovery
+DISCOVERY_READINESS: insufficient
+NEXT_ACTION: targeted discovery questions
+```
+
+A confirmação não deve fingir que uma leitura incompleta foi integral.
+
+## 28.7. Chave de ativação para o ChatGPT
+
+O usuário pode copiar e colar o prompt abaixo **na mesma conversa em que realizou o Discovery**.
+
+```text
+ATIVAR ENGINE — PROCESSO DE DESENVOLVIMENTO DE SOFTWARE COM IA ASSISTIDA
+
+Quero que, a partir deste ponto, você utilize como protocolo operacional desta conversa
+o processo canônico disponível em:
+
+https://github.com/jukazilli/processo-de-desenvolvimento-de-software-com-ia-assistida
+
+Antes de gerar qualquer documento ou executar qualquer etapa:
+
+1. acesse o repositório público usando o mecanismo disponível neste ambiente;
+2. leia integralmente o README.md atual, do início ao fim;
+3. não use apenas um resumo, memória prévia ou trechos isolados;
+4. se a leitura exigir paginação ou múltiplas chamadas, continue até consumir o arquivo inteiro;
+5. identifique, quando possível, repository, branch e commit SHA da versão carregada;
+6. construa um mapa operacional de cada tópico, entendendo:
+   - o que ele governa;
+   - quando deve ser consultado;
+   - quais decisões possuem precedência;
+   - quais gates exigem aprovação humana;
+   - quais artefatos podem ser gerados;
+   - quando pesquisa web atual é obrigatória;
+   - quando a execução deve passar para o Codex;
+7. considere toda a conversa anterior a esta mensagem como matéria-prima do Discovery do meu projeto;
+8. classifique internamente o que já conversamos em decidido, hipótese, pendente e descartado;
+9. não transforme hipótese em requisito sem minha aprovação;
+10. não gere nenhum arquivo .md apenas por ativar a engine;
+11. não gere todos os documentos de uma vez;
+12. cada documento deverá passar por análise, minha leitura, correção e aprovação antes da canonização;
+13. quando uma versão de documento for aprovada, altere o mesmo artefato em vez de criar cópias concorrentes;
+14. se houver GitHub autorizado para o projeto, você poderá salvar o .md aprovado nele;
+15. se não houver, gere o arquivo para eu salvar localmente no destino que definirmos;
+16. nunca presuma que possui acesso de escrita a um repositório: verifique antes;
+17. mantenha esta versão da engine como referência durante a conversa e não troque silenciosamente para outra versão caso o repositório seja atualizado.
+
+Depois de concluir a leitura integral, não inicie nenhuma etapa por conta própria.
+Responda apenas com um handshake curto contendo:
+
+ENGINE_STATUS
+SOURCE
+BRANCH
+COMMIT, se disponível
+PROCESS_LOADED
+CURRENT_STAGE
+DISCOVERY_READINESS
+CANONICAL_DOCUMENTS_CREATED
+NEXT_ELIGIBLE_ACTION
+
+Se você concluir que ainda não existe Discovery suficiente, indique isso e aguarde minha autorização para continuar as perguntas.
+```
+
+## 28.8. Primeiro acionamento — Pesquisa e Viabilidade
+
+Depois da engine estar ativa, um comando como:
+
+```text
+Ok, faça a Pesquisa e Viabilidade com base no que já conversamos.
+```
+
+**não deve gerar imediatamente `01_Pesquisa_e_Viabilidade.md`.**
+
+O fluxo correto é:
+
+```text
+comando humano
+        ↓
+reler contexto de Discovery
+        ↓
+consultar regras do Documento 01
+        ↓
+identificar lacunas
+        ↓
+realizar pesquisa web atual quando necessária
+        ↓
+separar evidência / hipótese / decisão
+        ↓
+apresentar análise para leitura humana
+        ↓
+humano corrige, questiona ou aprova
+        ↓
+IA ajusta a análise
+        ↓
+aprovação explícita para canonização
+        ↓
+somente então gerar 01_Pesquisa_e_Viabilidade.md
+        ↓
+salvar/versionar no destino aprovado
+```
+
+A Pesquisa e Viabilidade apresentada inicialmente no chat é um **artefato de revisão**, ainda não canônico.
+
+Ela pode conter fontes, evidências, riscos, concorrentes, hipóteses, alternativas, limitações e recomendação. O humano precisa conseguir lê-la antes que ela vire fonte da verdade.
+
+## 28.9. Aprovação possui duas fases distintas
+
+Para evitar que uma resposta ainda em discussão vire arquivo canônico por acidente, o processo deve distinguir:
+
+```text
+APROVAÇÃO DO CONTEÚDO
+        ↓
+AUTORIZAÇÃO PARA CANONIZAR
+```
+
+Exemplo:
+
+```text
+Usuário:
+"A análise ficou correta. Só ajuste X."
+
+→ ainda não gerar arquivo final.
+
+Usuário:
+"Agora está aprovado. Gere o documento 01 e salve no repositório."
+
+→ canonização autorizada.
+```
+
+Quando o contexto tornar inequívoco que o humano aprovou **e pediu a geração do documento**, a IA pode executar ambas as ações na mesma interação.
+
+Em caso de dúvida, preservar a análise em chat e perguntar antes de escrever a fonte canônica.
+
+## 28.10. Ciclo obrigatório para os documentos seguintes
+
+A mesma regra se repete nas próximas camadas.
+
+```text
+conteúdo anterior aprovado
+        ↓
+IA consulta a seção correta da Engine
+        ↓
+produz proposta do próximo documento
+        ↓
+humano lê
+        ↓
+humano corrige
+        ↓
+IA reconcilia
+        ↓
+humano aprova
+        ↓
+humano autoriza canonização
+        ↓
+.md é criado/atualizado
+        ↓
+próxima camada se torna elegível
+```
+
+A engine deve impedir comandos vagos como:
+
+```text
+"Gere toda a documentação necessária."
+```
+
+quando isso violar o processo de aprovação progressiva.
+
+Ela deve explicar que a metodologia exige geração **um documento por vez**.
+
+## 28.11. Destino dos documentos do projeto
+
+A metodologia e os documentos do produto são coisas diferentes.
+
+```text
+REPOSITÓRIO DA ENGINE
+→ contém este processo
+
+REPOSITÓRIO DO PROJETO
+→ contém o software e seus documentos canônicos
+```
+
+Antes da primeira canonização, o destino deve estar claro.
+
+Fluxos possíveis:
+
+```text
+A. GitHub conectado e autorizado
+   → criar/atualizar .md diretamente no repositório do projeto
+
+B. GitHub não conectado
+   → gerar .md para download
+   → usuário salva na pasta local do projeto
+
+C. projeto ainda sem repositório
+   → gerar .md localmente
+   → versionar quando o repositório for criado
+```
+
+A IA nunca deve salvar documentos do projeto dentro do repositório público da Engine.
+
+## 28.12. Continuidade de sessão
+
+A engine deve manter um pequeno estado operacional durante a conversa, por exemplo:
+
+```text
+ENGINE_VERSION: <commit>
+PROJECT_STAGE: 02_BRIEFING_REVIEW
+LAST_CANONICAL_DOCUMENT: 01_Pesquisa_e_Viabilidade.md
+NEXT_DOCUMENT: 02_Briefing_de_Produto_e_Escopo.md
+PROJECT_DOC_DESTINATION: <repo ou pasta>
+BLOCKERS: none
+```
+
+Esse estado é operacional à conversa atual. Ele não substitui os arquivos canônicos nem deve ser tratado como memória permanente garantida.
+
+Ao retomar uma conversa muito longa ou quando houver dúvida de contexto, a IA deve reler os documentos já canonizados antes de continuar.
+
+## 28.13. Atualização ou rotação da chave
+
+A "chave" é um bootstrap textual, não uma credencial secreta.
+
+Ela pode ser atualizada sempre que o protocolo de ativação mudar.
+
+Uma chave nova deve preservar quatro propriedades:
+
+```text
+1. aponta para a fonte canônica;
+2. exige leitura integral;
+3. exige confirmação de versão;
+4. não autoriza geração documental sem gate humano.
+```
+
+Se este README mudar de forma material, a chave deste tópico deve ser revisada no mesmo commit ou em um commit subsequente explicitamente rastreável.
+
+O usuário nunca precisa inserir tokens, senhas, API keys ou outras credenciais dentro da chave de ativação.
+
+## 28.14. Transição do ChatGPT para o Codex
+
+ChatGPT e Codex possuem papéis diferentes nesta metodologia.
+
+A transição acontece quando a baseline aprovada já está disponível no repositório ou na máquina local que o Codex utilizará.
+
+Antes do handoff, espera-se, conforme o estágio do projeto:
+
+- documentos canônicos aprovados;
+- Documento 06 disponível;
+- Documento 07 aprovado;
+- Infraestrutura e Plano de Fundação aprovado;
+- Documento 08 com backlog canônico;
+- Documento 09 quando já aplicável;
+- working tree sincronizada com a versão documental aprovada.
+
+O Codex não deve reconstruir o Discovery do zero quando a documentação já responde às decisões necessárias.
+
+## 28.15. Pré-condição local do Codex
+
+Quando os documentos estiverem no Git, a máquina onde o Codex executará deve possuir o repositório do **projeto** clonado e atualizado.
+
+Antes de começar:
+
+```text
+remote atualizado
+        ↓
+branch correta
+        ↓
+últimos commits baixados
+        ↓
+documentos canônicos disponíveis localmente
+        ↓
+Codex pode consumi-los
+```
+
+Se houver mudanças documentais ainda não commitadas ou não sincronizadas, o Codex deve tratá-las como estado local explícito e não presumir que o remoto representa a versão mais recente.
+
+## 28.16. Prompt de bootstrap para o Codex
+
+Na primeira execução do Codex sobre o projeto, pode-se usar:
+
+```text
+CONSUMIR PROCESSO E BACKLOG — INÍCIO DA EXECUÇÃO
+
+Antes de alterar qualquer código, faça uma leitura integral da documentação canônica disponível neste repositório/projeto.
+
+1. identifique todos os documentos .md canônicos;
+2. leia-os na ordem de precedência definida pelo processo;
+3. leia integralmente o Documento 06 — Técnicas de Desenvolvimento e trate suas regras como restrições obrigatórias de escrita de código;
+4. leia o Documento 07 — Engenharia e Arquitetura e identifique modelo arquitetural, tipo de repositório, módulos, fronteiras, contratos e decisões rejeitadas;
+5. leia Infraestrutura e Plano de Fundação;
+6. consuma integralmente o Documento 08 — Backlog Canônico;
+7. leia a Matriz Operacional de Rastreabilidade quando existir;
+8. verifique se existem documentos derivados, ADRs, contratos, runbooks ou instruções locais para agents;
+9. não comece implementando uma funcionalidade aleatória;
+10. determine primeiro o estado real da Fundação e dos itens FND-*;
+11. procure inconsistências entre documentação, backlog, código e testes antes de executar;
+12. não altere produto, arquitetura, infraestrutura ou decisões canônicas silenciosamente;
+13. não instale dependências, crie serviços pagos, exponha segredos ou faça ações destrutivas sem respeitar os gates definidos;
+14. antes de escrever código, inspecione o código existente, padrões locais e possibilidades reais de reutilização;
+15. código, naming, comentários e docstrings técnicos devem seguir as regras do Documento 06;
+16. cada item executado deve deixar testes, gates e evidências exigidos pelo backlog;
+17. atualize rastreabilidade conforme a execução;
+18. quando encontrar uma lacuna que altere intenção de produto, custo, risco ou arquitetura, pare e apresente o bloqueio ao humano em vez de inventar uma decisão.
+
+Nesta primeira resposta, ainda não implemente.
+
+Apresente apenas:
+
+DOCUMENTS_CONSUMED
+DOCUMENT_CONSISTENCY
+CURRENT_FOUNDATION_STATUS
+BACKLOG_STATUS
+NEXT_EXECUTABLE_ITEM
+BLOCKERS
+PROPOSED_FIRST_SLICE
+
+Depois aguarde minha autorização para iniciar a execução.
+```
+
+## 28.17. Comando curto para uso recorrente no Codex
+
+Depois que o Codex já consumiu a documentação e confirmou o estado do projeto, o usuário pode usar comandos muito mais simples.
+
+Exemplo:
+
+```text
+Consuma o backlog e inicie a próxima fatia executável respeitando toda a documentação canônica, os quality gates e a rastreabilidade do projeto.
+```
+
+Ou, no início da Fundação:
+
+```text
+Consuma o backlog para iniciarmos o desenvolvimento da aplicação. Comece pelos itens FND elegíveis, respeitando a documentação canônica e os gates humanos.
+```
+
+A simplicidade do comando é possível porque as decisões complexas já foram externalizadas nos documentos.
+
+## 28.18. O Codex deve provar que consumiu antes de executar
+
+O Codex não deve responder apenas:
+
+```text
+"Entendido, vou começar."
+```
+
+Antes da primeira alteração, deve conseguir apontar pelo menos:
+
+- quais documentos encontrou;
+- qual Documento 06 governa o código;
+- qual arquitetura está aprovada;
+- qual infraestrutura está prevista;
+- quais itens FND estão pendentes/concluídos;
+- qual é o próximo item elegível;
+- quais gates deverão provar a entrega.
+
+Isso não exige uma reprodução integral da documentação. Exige evidência de que a execução está ancorada nela.
+
+## 28.19. Quando devolver a decisão para o ChatGPT/humano
+
+Durante execução, o Codex pode encontrar uma decisão que o backlog não resolve.
+
+Exemplos:
+
+- requisito ambíguo;
+- conflito entre dois documentos;
+- nova necessidade de produto;
+- decisão significativa de UX/UI;
+- mudança de arquitetura;
+- infraestrutura não prevista;
+- recurso que gera custo;
+- risco de segurança novo;
+- alteração que muda escopo.
+
+Nesses casos:
+
+```text
+Codex identifica bloqueio
+        ↓
+não inventa solução canônica
+        ↓
+registra contexto e opções
+        ↓
+humano leva a decisão ao fluxo documental/ChatGPT
+        ↓
+documentação é reconciliada e aprovada
+        ↓
+Codex atualiza contexto
+        ↓
+execução continua
+```
+
+O Codex pode propor alternativas técnicas, mas não possui autoridade para mudar silenciosamente a intenção canônica do produto.
+
+## 28.20. Integridade entre ChatGPT e Codex
+
+O handoff deve preservar a seguinte cadeia:
+
+```text
+DISCOVERY NO CHATGPT
+        ↓
+ANÁLISE
+        ↓
+REVISÃO HUMANA
+        ↓
+DOCUMENTO CANÔNICO .MD
+        ↓
+REPOSITÓRIO / PASTA LOCAL
+        ↓
+CODEX CONSOME
+        ↓
+BACKLOG
+        ↓
+IMPLEMENTAÇÃO
+        ↓
+TESTES / GATES
+        ↓
+EVIDÊNCIA
+        ↓
+RASTREABILIDADE
+```
+
+O ChatGPT não deve entregar ao Codex apenas um resumo informal quando os documentos canônicos existem.
+
+O Codex não deve substituir documentos por sua própria interpretação da conversa original.
+
+A ponte entre ambos é a **documentação versionada**.
+
+## 28.21. Regra para exemplos práticos desta metodologia
+
+Exemplos completos de aplicação deste processo não devem ser misturados a este README canônico.
+
+Eles devem ser mantidos em diretório separado, por exemplo:
+
+```text
+/examples/
+```
+
+O README principal continua definindo **o processo**.
+
+Os exemplos demonstram **o processo acontecendo**: conversa de Discovery, comandos do humano, respostas da IA, momentos de revisão, aprovações, geração dos `.md`, handoff para o Codex e execução.
+
+A criação desses exemplos deve acontecer separadamente para que uma narrativa fictícia ou didática nunca seja confundida com regra normativa da Engine.
+
+## 28.22. Resultado esperado da ativação
+
+Quando este tópico estiver sendo seguido corretamente, o usuário pode partir de uma conversa natural sobre uma ideia e progressivamente chegar a software executável sem transformar a primeira conversa em código prematuro.
+
+```text
+IDEIA DISCUTIDA
+        ↓
+CHAVE DE ATIVAÇÃO
+        ↓
+ENGINE CARREGADA INTEGRALMENTE
+        ↓
+PESQUISA / ANÁLISE
+        ↓
+REVISÃO HUMANA
+        ↓
+DOCUMENTAÇÃO CANÔNICA UM A UM
+        ↓
+BASELINE APROVADA
+        ↓
+HANDOFF PARA CODEX
+        ↓
+FUNDAÇÃO
+        ↓
+IMPLEMENTAÇÃO RASTREÁVEL
+```
+
+A chave existe para reduzir o prompt necessário ao usuário sem reduzir a profundidade do processo.
+
+> **O usuário gira a chave; a Engine carrega as regras; o humano continua aprovando as decisões; o Codex executa somente o que foi canonizado.**
