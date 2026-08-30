@@ -1,6 +1,6 @@
 ---
 document_id: PROCESS-10-BACKLOG-CANONICO
- title: Backlog Canônico, Rastreabilidade e Plano de Entrega
+title: Backlog Canônico, Rastreabilidade e Plano de Entrega
 status: draft-methodology
 version: 0.1.0
 stage: backlog-canonico
