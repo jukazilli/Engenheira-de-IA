@@ -8,7 +8,7 @@
 
 Este repositório documenta o processo de desenvolvimento de aplicações assistido por ChatGPT e Codex adotado a partir da experiência do projeto DayGym.
 
-O objetivo não é pedir para uma IA "criar um sistema" a partir de um prompt único. O processo separa descoberta, definição de produto, experiência, engenharia, arquitetura, infraestrutura, execução, validação e evolução documental.
+O objetivo não é pedir para uma IA "criar um sistema" a partir de um prompt único. O processo separa descoberta, definição de produto, experiência, engenharia, arquitetura, seleção tecnológica, infraestrutura, execução, validação e evolução documental.
 
 A regra central é:
 
@@ -20,6 +20,8 @@ Documentação canônica aprovada
 Engenharia
         ↓
 Arquitetura
+        ↓
+Visão do Tech Lead
         ↓
 Infraestrutura
         ↓
@@ -73,7 +75,7 @@ Uma hipótese discutida no Discovery não pode ser promovida automaticamente a r
 
 ### 2.2. Markdown é o formato canônico
 
-Todos os documentos de produto, UX, UI, engenharia, arquitetura, infraestrutura, backlog e rastreabilidade devem ser mantidos prioritariamente em `.md`.
+Todos os documentos de produto, UX, UI, técnicas, engenharia, arquitetura, visão do Tech Lead, infraestrutura, backlog e rastreabilidade devem ser mantidos prioritariamente em `.md`.
 
 ```text
 .md    → formato canônico
@@ -135,6 +137,8 @@ UX/UI incorreta
 Engenharia inadequada
         ↓
 Arquitetura inadequada
+        ↓
+Stack tecnológica inadequada
         ↓
 Infraestrutura inadequada
         ↓
@@ -225,6 +229,7 @@ Principios_de_UX_UI.md
 05_Especificacao_de_UX.md
 06_Tecnicas_de_Desenvolvimento.md
 07_Engenharia_e_Arquitetura.md
+Visao_do_Tech_Lead.md
 Infraestrutura_e_Plano_de_Fundacao.md
 08_Backlog_Canonico_Rastreabilidade_e_Plano_de_Entrega.md
 09_Matriz_Operacional_de_Rastreabilidade.md
@@ -232,7 +237,9 @@ Infraestrutura_e_Plano_de_Fundacao.md
 
 `Principios_de_UX_UI.md` não é numerado porque não representa apenas uma etapa linear. Ele é uma camada normativa transversal, específica para a aplicação, consultada continuamente por UI, UX, Design System e implementação.
 
-`Infraestrutura_e_Plano_de_Fundacao.md` também não altera a numeração histórica 01–09. Ele é uma ponte operacional entre o dimensionamento técnico do Documento 07 e os itens FND do backlog.
+`Visao_do_Tech_Lead.md` não altera a numeração histórica 01–09. Ele é a ponte canônica entre as decisões do Documento 07 e a materialização tecnológica do projeto: define com quais linguagens, runtimes, frameworks, bibliotecas e ferramentas a arquitetura será implementada.
+
+`Infraestrutura_e_Plano_de_Fundacao.md` também não altera a numeração histórica 01–09. Ele é uma ponte operacional entre o dimensionamento técnico, a stack aprovada e os itens FND do backlog.
 
 ---
 
@@ -690,10 +697,10 @@ O resultado esperado é uma base que possa ser entendida por um engenheiro compe
 
 ## Deve conter, quando aplicável
 
-- linguagem e runtime;
-- versões fixadas;
-- package manager;
-- TypeScript strict ou equivalente;
+- linguagem e runtime quando já forem uma restrição previamente aprovada;
+- política de versões e de fixação de toolchain;
+- regras para o package manager definido pelo Tech Lead;
+- strictness/type safety ou equivalente;
 - organização de módulos;
 - convenções de naming;
 - idioma técnico do código;
@@ -721,6 +728,8 @@ O resultado esperado é uma base que possa ser entendida por um engenheiro compe
 - revisão de código;
 - Definition of Done;
 - instruções específicas para agentes.
+
+O Documento 06 pode impor restrições tecnológicas quando elas já forem decisões de produto, organização ou compliance, mas **não é a camada responsável por escolher a stack completa do projeto**. A seleção concreta de linguagens, runtimes, frameworks, bibliotecas e tooling pertence à Visão do Tech Lead, depois que a engenharia e a arquitetura estiverem definidas.
 
 ## 10.1. Princípio de legibilidade universal
 
@@ -1269,23 +1278,35 @@ Quando uma tecnologia instalada possuir documentação local ou versão diferent
 
 A IA deve considerar o Documento 06 uma **restrição de execução**, não uma recomendação opcional. Se uma solicitação induzir código que viole os padrões definidos, o agente deve procurar uma implementação compatível ou explicitar o conflito antes de criar dívida silenciosa.
 
-## Separação entre Técnicas e Engenharia
+## Separação entre Técnicas, Engenharia, Arquitetura e Visão do Tech Lead
 
-`06_Tecnicas_de_Desenvolvimento.md` define **como trabalhar no código**.
+`06_Tecnicas_de_Desenvolvimento.md` define **como o código deve ser escrito e mantido**.
 
-O Documento 07 define **quais propriedades técnicas o sistema precisa suportar e qual arquitetura responde a essas propriedades**.
+O Documento 07 define **quais propriedades técnicas o sistema precisa suportar e como ele será estruturado arquiteturalmente**.
+
+`Visao_do_Tech_Lead.md` define **com quais tecnologias essa arquitetura será implementada**.
+
+`Infraestrutura_e_Plano_de_Fundacao.md` define **onde essa combinação será executada e como será preparada operacionalmente**.
 
 Exemplo:
 
 ```text
 Técnica:
-TypeScript strict é obrigatório.
+O projeto exige type safety, naming em inglês, testes de regressão e dependências justificadas.
 
 Engenharia:
 O aplicativo precisa suportar uso offline e reconciliação posterior sem duplicar operações.
 
 Arquitetura:
 Persistência local + IDs de operação + comandos idempotentes + sincronização explícita.
+
+Visão do Tech Lead:
+Selecionar linguagem, runtime e bibliotecas que suportem esse modelo com contratos fortes,
+testabilidade, compatibilidade com a plataforma e baixa complexidade acidental.
+
+Infraestrutura:
+Selecionar os serviços e ambientes capazes de executar a stack aprovada com segurança,
+custo e operação compatíveis com o projeto.
 ```
 
 ---
@@ -1318,6 +1339,8 @@ Decisão arquitetural
 Estrutura do repositório
    ↓
 Fronteiras e contratos
+   ↓
+Critérios para seleção tecnológica
    ↓
 Inventário de necessidades de infraestrutura
 ```
@@ -1412,6 +1435,8 @@ Clean Architecture
 Hexagonal
 microservices
 monorepo
+Next.js
+NestJS
 Supabase
 Cloud Run
 Redis
@@ -1419,6 +1444,8 @@ Kafka
 ```
 
 Esses nomes representam soluções possíveis. Primeiro deve existir o problema técnico que justifica a solução.
+
+Frameworks, bibliotecas e runtimes concretos serão definidos pela Visão do Tech Lead somente depois que as forças e decisões arquiteturais estiverem claras.
 
 ## 11.3. O que pertence à Arquitetura
 
@@ -1462,8 +1489,8 @@ O Documento 07 deve decidir explicitamente:
 - design tokens compartilhados quando houver;
 - migrations;
 - infraestrutura como código quando existir;
-- tooling;
-- testes;
+- tooling necessário como categoria, sem escolher ferramenta por hábito;
+- testes necessários como camadas e responsabilidades;
 - documentação;
 - fronteiras de importação;
 - ownership lógico.
@@ -1491,7 +1518,6 @@ Exemplo de monorepo possível:
   /contracts
   /design-tokens
   /config
-/supabase
 /infra
 /tooling
 /docs
@@ -1536,10 +1562,10 @@ Usaremos Clean Architecture porque separa responsabilidades.
 Exemplo adequado:
 
 ```text
-O domínio precisa ser compartilhável entre web, mobile e testes sem depender de React,
-Expo, banco ou HTTP. Por isso, regras de domínio serão isoladas em um package puro e
-integrações entrarão por adapters. Não será adotada uma Clean Architecture cerimonial
-completa; apenas as fronteiras que resolvem esse requisito serão utilizadas.
+O domínio precisa ser compartilhável entre web, mobile e testes sem depender de framework,
+banco ou HTTP. Por isso, regras de domínio serão isoladas em um package puro e integrações
+entrarão por adapters. Não será adotada uma Clean Architecture cerimonial completa; apenas
+as fronteiras que resolvem esse requisito serão utilizadas.
 ```
 
 A decisão deve explicar quais forças resolve e quais custos introduz.
@@ -1570,7 +1596,7 @@ Decisão:
 /packages/domain não depende de framework.
 
 Verificação:
-boundary check impede imports de React, Next, Expo ou SDKs de infraestrutura.
+boundary check impede imports de frameworks de UI, servidores HTTP ou SDKs de infraestrutura.
 ```
 
 Outro exemplo:
@@ -1622,14 +1648,33 @@ Revisitar quando:
 
 Isso impede que um agente futuro reabra decisões sem contexto.
 
-## 11.9. Saída obrigatória para a etapa de infraestrutura
+## 11.9. Saída obrigatória para a Visão do Tech Lead e para Infraestrutura
 
-O Documento 07 deve terminar com um inventário de necessidades sem escolher silenciosamente provedores.
-
-Exemplo:
+O Documento 07 deve terminar com requisitos e restrições suficientes para que duas decisões diferentes possam acontecer sem invenção silenciosa:
 
 ```text
-INF-NEED-001 — PostgreSQL gerenciado com backup.
+ARQUITETURA
+        ├──→ VISÃO DO TECH LEAD
+        │    escolhe stack, frameworks, bibliotecas e tooling
+        │
+        └──→ INFRAESTRUTURA
+             escolhe provedores, ambientes e serviços operacionais
+```
+
+Para a Visão do Tech Lead, o Documento 07 pode produzir restrições como:
+
+```text
+TL-NEED-001 — O domínio compartilhado não pode depender de framework de UI ou transporte.
+TL-NEED-002 — Web e API precisam de contratos tipados e validáveis em runtime.
+TL-NEED-003 — O projeto precisa suportar testes unitários, integração e E2E automatizados.
+TL-NEED-004 — O backend deve operar de forma stateless na superfície HTTP.
+TL-NEED-005 — A solução deve minimizar complexidade operacional para uma equipe pequena.
+```
+
+Para Infraestrutura, pode produzir necessidades como:
+
+```text
+INF-NEED-001 — Banco relacional gerenciado com backup.
 INF-NEED-002 — Auth com e-mail e recuperação de conta.
 INF-NEED-003 — Hosting web com CDN.
 INF-NEED-004 — Runtime stateless para API.
@@ -1640,11 +1685,383 @@ INF-NEED-008 — Secrets manager.
 INF-NEED-009 — Observabilidade.
 ```
 
-Arquitetura define **o que tecnicamente precisamos**. A etapa seguinte define **onde e com quais serviços essas necessidades serão executadas**.
+Arquitetura define **o que tecnicamente precisamos e quais fronteiras devem existir**. A Visão do Tech Lead define **com quais tecnologias essas decisões serão materializadas**. A etapa de Infraestrutura define **onde e com quais serviços operacionais essa stack será executada**.
 
 ## Critério de qualidade do Documento 07
 
-O Documento 07 está maduro quando outra IA consegue lê-lo e montar a estrutura inicial do projeto sem inventar o modelo arquitetural, o tipo de repositório, as fronteiras ou a intenção dos módulos.
+O Documento 07 está maduro quando outra IA consegue lê-lo e compreender o modelo arquitetural, o tipo de repositório, as fronteiras, a intenção dos módulos, os atributos de qualidade e os critérios que a stack deverá satisfazer sem escolher tecnologias por preferência pessoal.
+
+---
+
+# Visão do Tech Lead — Stack e Implementação Tecnológica
+
+## Pergunta central
+
+> **Com quais linguagens, runtimes, frameworks, bibliotecas e ferramentas a arquitetura aprovada deve ser implementada para maximizar qualidade de código, manutenibilidade, testabilidade, segurança e desempenho dentro das restrições reais do projeto?**
+
+## Objetivo
+
+Transformar as decisões de engenharia e arquitetura em uma **stack tecnológica explícita, coerente e justificável**, eliminando a liberdade do agente de escolher bibliotecas, frameworks ou ferramentas de forma oportunista durante a implementação.
+
+`Visao_do_Tech_Lead.md` funciona como o contrato tecnológico do projeto.
+
+Ele responde:
+
+```text
+Engenharia
+"O que o sistema precisa suportar?"
+        ↓
+Arquitetura
+"Como o sistema será estruturado?"
+        ↓
+Visão do Tech Lead
+"Com quais tecnologias vamos implementar essa estrutura?"
+```
+
+A escolha tecnológica não deve anteceder a compreensão do problema técnico.
+
+## Inputs obrigatórios
+
+A Visão do Tech Lead deve consumir, no mínimo:
+
+- `06_Tecnicas_de_Desenvolvimento.md`, para respeitar o padrão de qualidade e escrita do código;
+- `07_Engenharia_e_Arquitetura.md`, como fonte primária das forças, fronteiras e decisões estruturais;
+- decisões relevantes de UI/Design System quando a seleção de tecnologia de frontend depender delas;
+- decisões relevantes de UX quando jornadas exigirem offline, realtime, mídia, acessibilidade, gestos ou comportamento específico de plataforma;
+- restrições organizacionais, legais, de licenciamento ou segurança já canonizadas.
+
+A Visão do Tech Lead **não pode alterar silenciosamente** o Documento 07 para tornar uma tecnologia preferida mais conveniente.
+
+Se uma tecnologia desejada exigir mudança arquitetural, a decisão deve retornar ao fluxo documental anterior.
+
+## O que deve definir
+
+Conforme o projeto, o documento deve definir explicitamente:
+
+### Linguagens e runtimes
+
+- linguagem principal de cada aplicação/superfície;
+- runtime de frontend, backend, worker, mobile ou desktop;
+- versão principal ou política de versão;
+- política de LTS quando aplicável;
+- nível de strictness/type safety;
+- interoperabilidade entre runtimes quando houver mais de um.
+
+### Frameworks
+
+- framework de frontend;
+- framework de backend/API;
+- framework mobile/desktop quando existir;
+- estratégia de rendering quando aplicável;
+- framework ou mecanismo de jobs/workers quando necessário;
+- justificativa de cada escolha.
+
+### Bibliotecas canônicas por responsabilidade
+
+O Tech Lead deve evitar que cada fatia do projeto escolha uma biblioteca diferente para resolver o mesmo problema.
+
+Definir, quando necessário, a tecnologia canônica para:
+
+- validação de schemas;
+- contratos e serialização;
+- acesso a dados/ORM/query builder;
+- migrations;
+- data fetching/cache de servidor no cliente;
+- state management;
+- formulários;
+- roteamento;
+- datas e fusos horários;
+- internacionalização;
+- autenticação no código quando a arquitetura já definir o modelo;
+- upload/mídia;
+- filas/jobs;
+- logging;
+- observabilidade;
+- feature flags;
+- testes unitários;
+- testes de integração;
+- E2E;
+- mocks;
+- componentes de UI quando houver justificativa;
+- gráficos, editor rico, mapas ou outras capacidades especializadas realmente necessárias.
+
+A ausência de uma biblioteca é também uma decisão válida. Se a plataforma ou framework já resolve adequadamente o problema, preferir não adicionar dependência.
+
+### Toolchain
+
+Definir, conforme aplicável:
+
+- package manager;
+- workspace/monorepo tooling;
+- bundler/build system;
+- lint;
+- formatter;
+- typecheck;
+- test runner;
+- coverage;
+- dependency audit;
+- secret scanning;
+- geração de código quando necessária;
+- automações locais que sustentam o Documento 06.
+
+### Compatibilidade e versões
+
+O documento deve registrar uma matriz suficiente para evitar combinações incompatíveis.
+
+Exemplo:
+
+| Camada | Tecnologia | Versão/política | Motivo | Restrições relevantes |
+| --- | --- | --- | --- | --- |
+| Linguagem | `<definir>` | `<definir>` | qualidade/type safety | — |
+| Runtime API | `<definir>` | LTS ou política aprovada | estabilidade | compatibilidade do framework |
+| Web | `<definir>` | major aprovada | UX/rendering | runtime suportado |
+| Validação | `<definir>` | compatível | contratos | usada em boundaries |
+| Testes | `<definir>` | compatível | feedback rápido | integração com build |
+
+Não é necessário fixar cada patch eternamente no documento. O lockfile materializa o estado exato instalado. O documento deve preservar as versões ou políticas de compatibilidade que representam uma decisão técnica relevante.
+
+## Pesquisa atual é obrigatória para escolhas materiais
+
+Frameworks, bibliotecas, runtimes e ferramentas mudam rapidamente.
+
+Antes de canonizar uma escolha material, a IA deve pesquisar fontes atuais, priorizando:
+
+1. documentação oficial;
+2. política de suporte/LTS;
+3. release notes relevantes;
+4. compatibilidade entre versões;
+5. situação de manutenção do projeto;
+6. advisories de segurança quando relevantes;
+7. licença;
+8. documentação e qualidade do ecossistema.
+
+Não selecionar tecnologia apenas com base em memória de treinamento do modelo, popularidade histórica ou uso em um projeto anterior.
+
+A pesquisa deve ser especialmente cuidadosa quando a escolha afetar:
+
+- arquitetura;
+- segurança;
+- performance;
+- tamanho de bundle;
+- compatibilidade de runtime;
+- lock-in;
+- capacidade de testes;
+- manutenção futura;
+- licenciamento.
+
+## Critérios de seleção
+
+Cada escolha relevante deve ser avaliada com base no que o projeto realmente precisa.
+
+Critérios possíveis:
+
+- aderência ao Documento 07;
+- capacidade de produzir código claro e previsível;
+- type safety quando pertinente;
+- qualidade da documentação;
+- maturidade;
+- manutenção ativa;
+- segurança;
+- testabilidade;
+- desempenho;
+- ergonomia sem esconder comportamento importante;
+- tamanho e custo de runtime/bundle;
+- interoperabilidade;
+- facilidade de observabilidade;
+- capacidade de automação;
+- curva de aprendizado da equipe;
+- disponibilidade de profissionais;
+- portabilidade;
+- lock-in;
+- licença;
+- custo de atualização;
+- compatibilidade com a infraestrutura provável.
+
+Quando houver alternativas relevantes, usar comparação explícita.
+
+| Critério | Peso | Opção A | Opção B | Opção C |
+| --- | ---: | ---: | ---: | ---: |
+| aderência arquitetural | | | | |
+| legibilidade/manutenção | | | | |
+| type safety | | | | |
+| testabilidade | | | | |
+| desempenho | | | | |
+| segurança | | | | |
+| maturidade/manutenção | | | | |
+| complexidade adicionada | | | | |
+| impacto operacional | | | | |
+| lock-in | | | | |
+
+A pontuação serve para expor trade-offs. Não deve criar precisão matemática artificial.
+
+## Uma biblioteca por responsabilidade, salvo justificativa
+
+A stack deve reduzir liberdade acidental durante a implementação.
+
+Exemplo desejado:
+
+```text
+Schema validation → uma solução canônica
+Data access       → uma solução canônica
+Unit tests        → um runner canônico
+E2E               → uma solução canônica
+Formatting        → uma configuração canônica
+```
+
+Evitar:
+
+```text
+módulo A usa biblioteca X
+módulo B usa biblioteca Y
+módulo C implementa manualmente
+```
+
+para a mesma responsabilidade sem motivo arquitetural.
+
+Exceções são permitidas quando plataformas diferentes realmente exigirem soluções diferentes, mas devem ser explícitas.
+
+## Contratos de uso importam tanto quanto a escolha
+
+Não basta escrever:
+
+```text
+"Usaremos biblioteca X."
+```
+
+O documento deve explicar **onde e para quê** ela pode ser usada.
+
+Exemplo conceitual:
+
+```text
+Validação de entrada
+→ todos os dados que atravessam boundary externo são validados pelo mecanismo canônico.
+
+Acesso a dados
+→ módulos de domínio não importam o client/ORM diretamente; adapters fazem essa mediação.
+
+State management
+→ estado local de componente permanece local; store global só é usada para estado realmente compartilhado.
+```
+
+Isso evita que a mesma tecnologia seja utilizada de formas incompatíveis em diferentes partes do projeto.
+
+## Dependências devem ser minimizadas
+
+O Tech Lead não deve produzir um catálogo de bibliotecas "úteis".
+
+Toda dependência relevante precisa de uma necessidade concreta.
+
+Antes de aprovar uma biblioteca, perguntar:
+
+1. qual requisito ou decisão arquitetural ela atende?
+2. o runtime/framework já resolve isso adequadamente?
+3. já existe uma dependência aprovada para essa responsabilidade?
+4. a biblioteca melhora qualidade ou apenas reduz algumas linhas?
+5. qual custo ela adiciona em bundle, segurança, atualização e complexidade?
+6. é possível substituí-la sem romper o domínio?
+
+Uma stack menor e coerente normalmente é preferível a uma stack extensa com múltiplas abstrações sobrepostas.
+
+## Tecnologias rejeitadas também devem ser registradas quando a decisão for material
+
+Exemplo:
+
+```markdown
+### TL-DEC-004 — Não adicionar segundo state manager
+
+Contexto:
+A stack já possui uma solução canônica para estado compartilhado e o novo caso pode ser
+resolvido por estado local ou cache de dados.
+
+Decisão:
+Não adicionar nova biblioteca.
+
+Motivo:
+Evitar dois modelos mentais, dependência duplicada e aumento de bundle.
+
+Revisitar quando:
+A solução existente não conseguir atender um requisito comprovado.
+```
+
+Esse registro impede que um agente futuro reabra a mesma escolha sem contexto.
+
+## Relação com Infraestrutura
+
+A Visão do Tech Lead escolhe a **stack de implementação**. Infraestrutura escolhe os **serviços e ambientes que executarão essa stack**.
+
+```text
+Tech Lead:
+Node-compatible runtime necessário
+        ↓
+Infraestrutura:
+comparar provedores capazes de executar esse runtime
+```
+
+A Infraestrutura não deve trocar framework, linguagem ou biblioteca canônica apenas para acomodar um provedor preferido.
+
+Se uma restrição real de infraestrutura tornar a stack inviável, deve ocorrer reconciliação:
+
+```text
+restrição de infraestrutura
+        ↓
+impacta stack?
+        ↓
+sim
+        ↓
+reabrir decisão do Tech Lead
+        ↓
+impacta arquitetura?
+        ↓
+se sim, reabrir Documento 07
+        ↓
+aprovação humana
+```
+
+## Saída para Fundação e Backlog
+
+A Visão do Tech Lead deve produzir decisões suficientemente objetivas para gerar FND e checks.
+
+Exemplos:
+
+```text
+TL-STACK-001 — Linguagem/runtime principal aprovados.
+TL-STACK-002 — Framework web aprovado.
+TL-STACK-003 — Framework/API aprovado.
+TL-LIB-001   — Validação de schemas possui solução canônica.
+TL-LIB-002   — Acesso a dados possui solução canônica.
+TL-TEST-001  — Runner unitário aprovado.
+TL-TEST-002  — E2E aprovado.
+TL-TOOL-001  — Package manager e workspace tooling aprovados.
+```
+
+Essas decisões podem originar itens como:
+
+```text
+FND — fixar versões e lockfile
+FND — criar workspace
+FND — configurar lint/format/typecheck
+FND — configurar test runner
+FND — configurar boundary checks
+FND — instalar apenas dependências canônicas aprovadas
+```
+
+O Codex não deve escolher uma alternativa tecnológica diferente durante o FND apenas porque conhece outra biblioteca.
+
+## Critério de qualidade da Visão do Tech Lead
+
+O documento está maduro quando outro engenheiro ou agente consegue montar a toolchain e iniciar a implementação sem precisar decidir novamente:
+
+- linguagem;
+- runtime;
+- framework principal de cada superfície;
+- package manager;
+- ferramentas de qualidade;
+- bibliotecas centrais por responsabilidade;
+- regras de uso dessas bibliotecas;
+- política de versões;
+- alternativas rejeitadas relevantes.
+
+Ao mesmo tempo, o documento não deve tentar prever toda dependência futura. Bibliotecas especializadas podem ser acrescentadas quando um requisito real surgir, seguindo o mesmo processo de avaliação, aprovação e consistência documental.
 
 ---
 
@@ -1652,11 +2069,11 @@ O Documento 07 está maduro quando outra IA consegue lê-lo e montar a estrutura
 
 ## Pergunta central
 
-> **Onde e com quais serviços a arquitetura aprovada será executada, considerando crescimento, custo, segurança e operação desejada pelo humano?**
+> **Onde e com quais serviços a arquitetura e a stack aprovadas serão executadas, considerando crescimento, custo, segurança e operação desejada pelo humano?**
 
 ## Objetivo
 
-Transformar o inventário de necessidades produzido pelo Documento 07 em uma infraestrutura pesquisada, aprovada e executável pelos itens FND do backlog.
+Transformar o inventário de necessidades produzido pelo Documento 07 e as decisões da Visão do Tech Lead em uma infraestrutura pesquisada, compatível, aprovada e executável pelos itens FND do backlog.
 
 A separação é:
 
@@ -1667,8 +2084,11 @@ ENGENHARIA
 ARQUITETURA
 "Como o software será estruturado para suportá-las?"
         ↓
+VISÃO DO TECH LEAD
+"Com quais tecnologias implementaremos essa arquitetura?"
+        ↓
 INFRAESTRUTURA
-"Onde e com quais serviços essa arquitetura será executada?"
+"Onde e com quais serviços essa stack será executada?"
         ↓
 FUNDAÇÃO
 "Crie e valide o ambiente necessário."
@@ -1755,7 +2175,7 @@ Perguntar quando relevante sobre:
 
 ## 12.2. Pesquisa web atual é obrigatória
 
-Preços, free tiers, quotas, regiões, planos e produtos mudam.
+Preços, free tiers, quotas, regiões, planos, produtos e compatibilidades de runtime mudam.
 
 Antes de recomendar infraestrutura para um novo projeto, a IA deve pesquisar informações atuais, preferencialmente em fontes oficiais:
 
@@ -1763,12 +2183,15 @@ Antes de recomendar infraestrutura para um novo projeto, a IA deve pesquisar inf
 2. pricing oficial;
 3. quotas e limits;
 4. regiões;
-5. segurança/compliance quando relevante;
-6. SLA/status quando necessário.
+5. runtimes e versões suportadas;
+6. compatibilidade com frameworks/tecnologias aprovados;
+7. segurança/compliance quando relevante;
+8. SLA/status quando necessário.
 
 A pesquisa deve responder:
 
 - o serviço continua disponível?
+- suporta a stack aprovada?
 - existe free tier ou crédito inicial?
 - quais limites afetam o projeto?
 - quando começa a cobrança?
@@ -1796,6 +2219,7 @@ Quando houver mais de uma opção razoável, apresentar de duas a quatro alterna
 
 | Critério | Opção A | Opção B | Opção C |
 | --- | --- | --- | --- |
+| compatibilidade com a stack | | | |
 | custo inicial | | | |
 | camada gratuita | | | |
 | facilidade de setup | | | |
@@ -1806,7 +2230,7 @@ Quando houver mais de uma opção razoável, apresentar de duas a quatro alterna
 | regiões | | | |
 | adequação ao projeto | | | |
 
-A recomendação deve explicar por que a alternativa escolhida combina com as respostas do humano e com as necessidades arquiteturais.
+A recomendação deve explicar por que a alternativa escolhida combina com as respostas do humano, com as necessidades arquiteturais e com a stack aprovada.
 
 ## 12.4. Perfil de infraestrutura de referência
 
@@ -1822,7 +2246,7 @@ A metodologia pode sugerir como ponto de partida, quando compatível e após rev
 
 Esse perfil é referência, não obrigação.
 
-Nunca escolher a stack apenas porque ela foi usada em outro projeto.
+Nunca escolher um provedor apenas porque ele foi usado em outro projeto. A infraestrutura também não pode reabrir silenciosamente a stack definida pelo Tech Lead.
 
 ## 12.5. O plano deve mapear a infraestrutura completa
 
@@ -1836,7 +2260,7 @@ Conforme aplicável, documentar:
 - CI;
 - estratégia de promoção.
 
-A **estrutura lógica do repositório** já foi decidida no Documento 07. Aqui são definidos os serviços operacionais ligados a ele.
+A **estrutura lógica do repositório** já foi decidida no Documento 07. A **toolchain e a stack** foram definidas na Visão do Tech Lead. Aqui são definidos os serviços operacionais ligados a elas.
 
 ### Ambientes
 
@@ -1849,6 +2273,7 @@ A **estrutura lógica do repositório** já foi decidida no Documento 07. Aqui s
 ### Frontend
 
 - provedor;
+- compatibilidade com framework/runtime aprovado;
 - região quando aplicável;
 - build;
 - domínio;
@@ -1857,7 +2282,7 @@ A **estrutura lógica do repositório** já foi decidida no Documento 07. Aqui s
 
 ### Backend/API
 
-- runtime;
+- runtime compatível com a stack aprovada;
 - provedor;
 - escalabilidade;
 - exposição pública/privada;
@@ -1867,7 +2292,7 @@ A **estrutura lógica do repositório** já foi decidida no Documento 07. Aqui s
 
 ### Banco de dados
 
-- tecnologia;
+- tecnologia definida ou restrita pela arquitetura/Tech Lead quando aplicável;
 - provedor;
 - instância/projeto;
 - ambientes;
@@ -1882,6 +2307,7 @@ A **estrutura lógica do repositório** já foi decidida no Documento 07. Aqui s
 
 - provedor;
 - métodos habilitados;
+- compatibilidade com o modelo arquitetural e SDKs aprovados quando aplicável;
 - SMTP/e-mail quando necessário;
 - redirect URLs;
 - MFA quando aplicável;
@@ -1898,7 +2324,7 @@ A **estrutura lógica do repositório** já foi decidida no Documento 07. Aqui s
 ### Workers, jobs, filas e eventos
 
 - necessidade;
-- runtime;
+- runtime compatível;
 - scheduler;
 - fila;
 - retry;
@@ -1911,7 +2337,8 @@ A **estrutura lógica do repositório** já foi decidida no Documento 07. Aqui s
 - métricas;
 - erros;
 - alertas;
-- tracing quando necessário.
+- tracing quando necessário;
+- integração compatível com a stack aprovada.
 
 ### Segurança
 
@@ -1933,13 +2360,13 @@ A **estrutura lógica do repositório** já foi decidida no Documento 07. Aqui s
 
 ## 12.6. O plano gera a Fundação — FND
 
-Depois da aprovação da infraestrutura, o Documento 08 deve transformar o plano em habilitadores FND.
+Depois da aprovação da infraestrutura, o Documento 08 deve transformar o plano e as decisões tecnológicas em habilitadores FND.
 
 Exemplo:
 
 ```text
 FND-001 — Criar repositório e proteção básica
-FND-002 — Fixar toolchain e lockfile
+FND-002 — Fixar toolchain, versões e lockfile conforme Visão do Tech Lead
 FND-003 — Configurar CI inicial
 FND-004 — Criar projeto de banco de staging
 FND-005 — Configurar migrations
@@ -1958,6 +2385,8 @@ FND não termina quando as contas foram criadas. Termina quando existe evidênci
 
 ```text
 repositório criado
++
+toolchain conforme Tech Lead
 +
 CI executando
 +
@@ -2133,6 +2562,8 @@ Eles devem ser derivados conjuntamente de:
         +
 07 Engenharia e Arquitetura
         +
+Visão do Tech Lead
+        +
 Infraestrutura e Plano de Fundação
         ↓
 FND do Backlog
@@ -2236,6 +2667,7 @@ Staging = sem evidência
 Também deve detectar:
 
 - implementação que contradiz arquitetura;
+- stack instalada que contradiz a Visão do Tech Lead;
 - UI que contradiz Princípios;
 - backlog sem origem documental;
 - requisito removido ainda tratado como ativo;
@@ -2315,7 +2747,7 @@ Determinar se a Fundação está realmente pronta para receber funcionalidades.
 Pode verificar:
 
 - estrutura do repo conforme arquitetura;
-- toolchain;
+- stack e toolchain conforme Visão do Tech Lead;
 - lockfile;
 - CI;
 - branches/proteções quando acessíveis;
@@ -2494,6 +2926,7 @@ Converte Issues relevantes encerradas em conhecimento persistente quando houver 
 - teste de regressão;
 - atualização de arquitetura;
 - atualização de técnicas;
+- atualização da Visão do Tech Lead;
 - nova skill.
 
 Nem toda Issue exige nova documentação.
@@ -2528,7 +2961,7 @@ Revisa forças de engenharia, alternativas arquiteturais, estrutura de repo, bou
 
 ### `foundation-orchestrator-agent`
 
-Consome Técnicas + Engenharia/Arquitetura + Infraestrutura + itens FND e conduz o setup, respeitando gates humanos para autenticação, custo e ações destrutivas.
+Consome Técnicas + Engenharia/Arquitetura + Visão do Tech Lead + Infraestrutura + itens FND e conduz o setup, respeitando gates humanos para autenticação, custo e ações destrutivas.
 
 ### `backlog-implementation-agent`
 
@@ -2552,7 +2985,7 @@ Cada ambiente pode implementá-las por skills, agents, comandos ou checks equiva
 
 # 16. Documentação de segunda geração
 
-Os documentos 01 a 09 formam a baseline inicial, mas não representam toda a documentação que um projeto terá durante sua vida.
+A baseline definida na Seção 3 — incluindo os documentos numerados 01–09, `Principios_de_UX_UI.md`, `Visao_do_Tech_Lead.md` e `Infraestrutura_e_Plano_de_Fundacao.md` — forma a base inicial do projeto, mas não representa toda a documentação que ele terá durante sua vida.
 
 Durante a implementação podem surgir artefatos derivados, por exemplo:
 
@@ -2575,6 +3008,7 @@ Exemplos de documentos derivados:
 - runbooks;
 - políticas de dependência;
 - decisões arquiteturais;
+- decisões tecnológicas específicas;
 - filas e eventos;
 - inventários operacionais;
 - observabilidade;
@@ -2630,6 +3064,17 @@ teste negativo
 gate de contrato de dados
 ```
 
+Outro exemplo tecnológico:
+
+```text
+Visão do Tech Lead:
+"validação de boundary usa uma solução canônica"
+        ↓
+regra de dependência/configuração
+        ↓
+check impede biblioteca concorrente sem exceção aprovada
+```
+
 A documentação deixa de ser somente descritiva e passa a participar da qualidade do software.
 
 ---
@@ -2641,7 +3086,7 @@ O processo trabalha com três níveis complementares:
 | Camada | Fontes principais | Pergunta |
 | --- | --- | --- |
 | Verdade de Produto | Docs 01–05 | O que o produto deve fazer e por quê? |
-| Verdade de Engenharia | Docs 06–07 + Infraestrutura + derivados | Como isso deve funcionar tecnicamente? |
+| Verdade de Engenharia | Doc 06 + Doc 07 + Visão do Tech Lead + Infraestrutura + derivados | Como isso deve ser construído e operar tecnicamente? |
 | Verdade de Execução | Docs 08–09 + código + testes + CI | O que foi realmente entregue e comprovado? |
 
 Exemplo:
@@ -2655,9 +3100,17 @@ Código: ainda inexistente
 Diferente de:
 
 ```text
+Tech Lead: biblioteca X é a solução canônica para responsabilidade Y
+Runtime: outro módulo introduziu biblioteca concorrente sem decisão aprovada
+→ gap de conformidade tecnológica
+```
+
+E também:
+
+```text
 Arquitetura: RLS obrigatória
 Runtime: tabela exposta sem RLS
-→ gap de conformidade
+→ gap de conformidade arquitetural
 ```
 
 ---
@@ -2669,18 +3122,19 @@ Depois da canonização da baseline, o Codex não deve receber apenas um prompt 
 Ele deve trabalhar dentro de um universo de decisões previamente definido.
 
 ```text
-O que construir       → Produto
-Como decidir          → PO + Princípios
-Como deve parecer     → UI + Design System
-Como deve funcionar   → UX
-Como programar        → Técnicas
-O que precisa suportar→ Engenharia
-Como estruturar       → Arquitetura
-Onde executar         → Infraestrutura
-Em que ordem          → Backlog
-Como provar           → Rastreabilidade + testes
-Quando reconciliar    → skills/agents de governança
-Quando terminou       → Gates + staging
+O que construir        → Produto
+Como decidir           → PO + Princípios
+Como deve parecer      → UI + Design System
+Como deve funcionar    → UX
+Como programar         → Técnicas
+O que precisa suportar → Engenharia
+Como estruturar        → Arquitetura
+Com quais tecnologias  → Visão do Tech Lead
+Onde executar          → Infraestrutura
+Em que ordem           → Backlog
+Como provar            → Rastreabilidade + testes
+Quando reconciliar     → skills/agents de governança
+Quando terminou        → Gates + staging
 ```
 
 ## Fundação antes das funcionalidades
@@ -2690,7 +3144,8 @@ O Codex deve consumir os itens `FND-*` do backlog como uma fase explícita de Fu
 FND pode incluir:
 
 - estrutura do repositório;
-- runtimes e package manager;
+- linguagens, runtimes, frameworks e package manager aprovados;
+- dependências canônicas iniciais;
 - CI/CD;
 - banco;
 - migrations;
@@ -2711,12 +3166,14 @@ A Fundação deriva de:
 +
 07 Engenharia e Arquitetura
 +
+Visão do Tech Lead
++
 Infraestrutura e Plano de Fundação
         ↓
 Itens FND do Backlog
 ```
 
-O Codex não deve escolher silenciosamente provedores nem contratar recursos durante a execução da Fundação.
+O Codex não deve escolher silenciosamente uma stack alternativa, outro framework, biblioteca concorrente ou provedor diferente durante a execução da Fundação.
 
 ## Fluxo esperado de cada fatia
 
@@ -2726,6 +3183,8 @@ Selecionar item canônico do backlog
 Ler origens documentais
         ↓
 Verificar dependências e princípios
+        ↓
+Verificar stack e contratos tecnológicos aplicáveis
         ↓
 Implementar a menor fatia coerente
         ↓
@@ -2748,7 +3207,7 @@ Promover
 
 # 20. Quality Gates
 
-Cada projeto define seus gates concretos no Documento 06, mas a metodologia espera, quando aplicável:
+Cada projeto define seus gates concretos no Documento 06 e materializa parte deles por meio das ferramentas escolhidas na Visão do Tech Lead, mas a metodologia espera, quando aplicável:
 
 - format check;
 - lint;
@@ -2765,6 +3224,7 @@ Cada projeto define seus gates concretos no Documento 06, mas a metodologia espe
 - migrações verificadas;
 - validação de infraestrutura;
 - conformidade arquitetural;
+- conformidade com stack/toolchain aprovada;
 - consistência documental;
 - auditoria de evidência do backlog.
 
@@ -2872,8 +3332,30 @@ depends_on:
 governs:
   - engineering
   - architecture
+  - technology-selection-inputs
   - infrastructure-needs
   - security
+---
+```
+
+Para a Visão do Tech Lead, quando útil:
+
+```yaml
+---
+document_id: TECH-LEAD-VISION
+title: Visão do Tech Lead
+status: canonical
+version: 1.0.0
+depends_on:
+  - DOC-06
+  - DOC-07
+governs:
+  - languages
+  - runtimes
+  - frameworks
+  - libraries
+  - toolchain
+  - technology-standards
 ---
 ```
 
@@ -2923,6 +3405,8 @@ Engenharia
         ↓
 Arquitetura
         ↓
+Visão do Tech Lead
+        ↓
 Infraestrutura
         ↓
 Backlog
@@ -2930,7 +3414,7 @@ Backlog
 Implementação
 ```
 
-Uma implementação não altera silenciosamente uma decisão de produto.
+Uma implementação não altera silenciosamente uma decisão de produto, arquitetura ou stack tecnológica.
 
 Se o runtime demonstrar que a decisão anterior é inviável ou inadequada, deve haver reconciliação documental antes de tratar a divergência como novo padrão.
 
@@ -2971,7 +3455,14 @@ Uma skill de consistência pode apontar a divergência, mas não deve resolver c
               07 Engenharia e Arquitetura
                        │
                        ▼
-          inventário de necessidades técnicas
+          forças + arquitetura + boundaries
+                       │ aprovação humana
+                       ▼
+                 Visão do Tech Lead
+             stack + frameworks + libs
+                       │ aprovação humana
+                       ▼
+          inventário técnico consolidado
                        │
                        ▼
        entrevista + pesquisa de infraestrutura
@@ -3027,17 +3518,19 @@ Este processo existe para produzir software em que:
 - técnicas de desenvolvimento sejam distinguidas de forças de engenharia;
 - engenharia preceda escolhas arquiteturais;
 - arquitetura defina modelo, fronteiras e estrutura do repositório por justificativa, não por hábito;
-- infraestrutura seja pesquisada e aprovada depois do dimensionamento arquitetural;
+- a Visão do Tech Lead transforme arquitetura em uma stack coerente, pesquisada e com responsabilidades tecnológicas explícitas;
+- frameworks e bibliotecas não sejam escolhidos oportunisticamente durante a implementação;
+- infraestrutura seja pesquisada e aprovada depois do dimensionamento arquitetural e da seleção tecnológica;
 - custo, contratação e credenciais permaneçam sob controle humano;
 - o backlog possua origem documental;
-- a Fundação prepare e prove o ambiente antes das funcionalidades;
+- a Fundação prepare e prove o ambiente e a toolchain antes das funcionalidades;
 - testes comprovem critérios de aceite;
 - documentação evolua junto com o código;
 - skills e agents portáveis mantenham consistência, conformidade e aprendizado sem depender de frameworks privados;
 - conhecimento recorrente possa virar Issue, check, teste, runbook ou skill reutilizável;
 - referências visuais sejam traduzidas em critérios objetivos sem apagar a identidade do produto;
 - staging produza evidência operacional;
-- a IA consiga trabalhar com autonomia sem inventar silenciosamente o produto.
+- a IA consiga trabalhar com autonomia sem inventar silenciosamente o produto ou sua stack.
 
 A metodologia pode ser resumida em uma frase:
 
@@ -3457,6 +3950,7 @@ Antes do handoff, espera-se, conforme o estágio do projeto:
 - documentos canônicos aprovados;
 - Documento 06 disponível;
 - Documento 07 aprovado;
+- Visão do Tech Lead aprovada;
 - Infraestrutura e Plano de Fundação aprovado;
 - Documento 08 com backlog canônico;
 - Documento 09 quando já aplicável;
@@ -3497,20 +3991,22 @@ Antes de alterar qualquer código, faça uma leitura integral da documentação 
 2. leia-os na ordem de precedência definida pelo processo;
 3. leia integralmente o Documento 06 — Técnicas de Desenvolvimento e trate suas regras como restrições obrigatórias de escrita de código;
 4. leia o Documento 07 — Engenharia e Arquitetura e identifique modelo arquitetural, tipo de repositório, módulos, fronteiras, contratos e decisões rejeitadas;
-5. leia Infraestrutura e Plano de Fundação;
-6. consuma integralmente o Documento 08 — Backlog Canônico;
-7. leia a Matriz Operacional de Rastreabilidade quando existir;
-8. verifique se existem documentos derivados, ADRs, contratos, runbooks ou instruções locais para agents;
-9. não comece implementando uma funcionalidade aleatória;
-10. determine primeiro o estado real da Fundação e dos itens FND-*;
-11. procure inconsistências entre documentação, backlog, código e testes antes de executar;
-12. não altere produto, arquitetura, infraestrutura ou decisões canônicas silenciosamente;
-13. não instale dependências, crie serviços pagos, exponha segredos ou faça ações destrutivas sem respeitar os gates definidos;
-14. antes de escrever código, inspecione o código existente, padrões locais e possibilidades reais de reutilização;
-15. código, naming, comentários e docstrings técnicos devem seguir as regras do Documento 06;
-16. cada item executado deve deixar testes, gates e evidências exigidos pelo backlog;
-17. atualize rastreabilidade conforme a execução;
-18. quando encontrar uma lacuna que altere intenção de produto, custo, risco ou arquitetura, pare e apresente o bloqueio ao humano em vez de inventar uma decisão.
+5. leia integralmente a Visão do Tech Lead e identifique linguagens, runtimes, frameworks, package manager, bibliotecas canônicas, toolchain, regras de uso e alternativas rejeitadas;
+6. leia Infraestrutura e Plano de Fundação e valide compatibilidade com a stack aprovada;
+7. consuma integralmente o Documento 08 — Backlog Canônico;
+8. leia a Matriz Operacional de Rastreabilidade quando existir;
+9. verifique se existem documentos derivados, ADRs, contratos, runbooks ou instruções locais para agents;
+10. não comece implementando uma funcionalidade aleatória;
+11. determine primeiro o estado real da Fundação e dos itens FND-*;
+12. procure inconsistências entre documentação, stack, backlog, código e testes antes de executar;
+13. não altere produto, arquitetura, stack, infraestrutura ou decisões canônicas silenciosamente;
+14. não instale dependências não aprovadas, crie serviços pagos, exponha segredos ou faça ações destrutivas sem respeitar os gates definidos;
+15. antes de escrever código, inspecione o código existente, padrões locais e possibilidades reais de reutilização;
+16. código, naming, comentários e docstrings técnicos devem seguir as regras do Documento 06;
+17. frameworks, bibliotecas e ferramentas devem seguir a Visão do Tech Lead;
+18. cada item executado deve deixar testes, gates e evidências exigidos pelo backlog;
+19. atualize rastreabilidade conforme a execução;
+20. quando encontrar uma lacuna que altere intenção de produto, custo, risco, arquitetura ou stack, pare e apresente o bloqueio ao humano em vez de inventar uma decisão.
 
 Nesta primeira resposta, ainda não implemente.
 
@@ -3518,6 +4014,7 @@ Apresente apenas:
 
 DOCUMENTS_CONSUMED
 DOCUMENT_CONSISTENCY
+TECH_STACK_STATUS
 CURRENT_FOUNDATION_STATUS
 BACKLOG_STATUS
 NEXT_EXECUTABLE_ITEM
@@ -3534,13 +4031,13 @@ Depois que o Codex já consumiu a documentação e confirmou o estado do projeto
 Exemplo:
 
 ```text
-Consuma o backlog e inicie a próxima fatia executável respeitando toda a documentação canônica, os quality gates e a rastreabilidade do projeto.
+Consuma o backlog e inicie a próxima fatia executável respeitando toda a documentação canônica, a stack aprovada, os quality gates e a rastreabilidade do projeto.
 ```
 
 Ou, no início da Fundação:
 
 ```text
-Consuma o backlog para iniciarmos o desenvolvimento da aplicação. Comece pelos itens FND elegíveis, respeitando a documentação canônica e os gates humanos.
+Consuma o backlog para iniciarmos o desenvolvimento da aplicação. Comece pelos itens FND elegíveis, respeitando a documentação canônica, a Visão do Tech Lead e os gates humanos.
 ```
 
 A simplicidade do comando é possível porque as decisões complexas já foram externalizadas nos documentos.
@@ -3558,6 +4055,7 @@ Antes da primeira alteração, deve conseguir apontar pelo menos:
 - quais documentos encontrou;
 - qual Documento 06 governa o código;
 - qual arquitetura está aprovada;
+- qual stack, frameworks e bibliotecas centrais estão aprovados;
 - qual infraestrutura está prevista;
 - quais itens FND estão pendentes/concluídos;
 - qual é o próximo item elegível;
@@ -3576,6 +4074,7 @@ Exemplos:
 - nova necessidade de produto;
 - decisão significativa de UX/UI;
 - mudança de arquitetura;
+- necessidade de trocar/adicionar framework ou biblioteca canônica;
 - infraestrutura não prevista;
 - recurso que gera custo;
 - risco de segurança novo;
@@ -3599,7 +4098,7 @@ Codex atualiza contexto
 execução continua
 ```
 
-O Codex pode propor alternativas técnicas, mas não possui autoridade para mudar silenciosamente a intenção canônica do produto.
+O Codex pode propor alternativas técnicas, mas não possui autoridade para mudar silenciosamente a intenção canônica do produto, a arquitetura ou a stack aprovada.
 
 ## 28.20. Integridade entre ChatGPT e Codex
 
