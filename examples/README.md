@@ -156,7 +156,30 @@ Isso não significa que toda etapa exige uma nova entrevista. A interação huma
 
 ## Objetivo dos casos
 
-Os casos de uso existem para testar a própria metodologia.
+Os casos de uso possuem **dois objetivos simultâneos**:
+
+1. **demonstrar o uso da metodologia** de forma fiel, permitindo que outra pessoa veja como o processo funciona em um trabalho completo;
+2. **validar a própria metodologia**, observando durante a execução se existem lacunas, redundâncias, excesso de processo, fronteiras confusas ou handoffs insuficientes.
+
+Por isso, o documento de exemplo de cada etapa é consequência da execução da etapa, e não o ponto de partida.
+
+A sequência correta é:
+
+```text
+EXECUTAR A ETAPA CONFORME A METODOLOGIA
+↓
+OBSERVAR SE O PROCESSO FUNCIONOU
+↓
+REGISTRAR EVENTUAIS PROBLEMAS OU AJUSTES
+↓
+APROVAR / CANONIZAR O RESULTADO DO CENÁRIO
+↓
+CRIAR O DOCUMENTO DE EXEMPLO A PARTIR DO QUE FOI REALMENTE PRODUZIDO
+↓
+USAR ESSE DOCUMENTO COMO ENTRADA CANÔNICA DA PRÓXIMA ETAPA
+```
+
+O exemplo final deve demonstrar o que realmente aconteceu durante o uso do processo. Ele não deve corrigir retrospectivamente a execução para fazê-la parecer mais limpa do que foi.
 
 Quando um caso revelar:
 
