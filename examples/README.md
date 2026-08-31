@@ -22,27 +22,43 @@ Ela não deve ser usada por ChatGPT, Codex ou leitor humano como demonstração 
 
 Um exemplo atual não é uma coleção de documentos preenchidos retrospectivamente.
 
-Ele precisa simular o trabalho real:
+Ele precisa **executar a metodologia de verdade sobre um cenário simulado**.
+
+O cenário, o cliente e as aprovações podem ser simulados; a execução do processo não é resumida nem reconstruída depois.
+
+A regra é:
 
 ```text
 ATIVAÇÃO DO PROCESSO
 ↓
-ETAPA ATUAL
+DISCOVERY COMO CONVERSA SIMULADA REAL
 ↓
-CONVERSA / INVESTIGAÇÃO
+PROPOSTA DO 00_DISCOVERY
 ↓
-PROPOSTA DO CHATGPT
+REVISÃO / AJUSTE / APROVAÇÃO SIMULADA
 ↓
-REVISÃO HUMANA
+CANONIZAÇÃO DO 00
 ↓
-AJUSTES
+PRÓXIMA ETAPA CONSOME O 00 CANÔNICO
 ↓
-APROVAÇÃO
+PRODUZ SUA PRÓPRIA PROPOSTA CONFORME A METODOLOGIA
 ↓
-CANONIZAÇÃO DO DOCUMENTO
+REVISÃO / APROVAÇÃO QUANDO EXIGIDA
 ↓
-PRÓXIMA ETAPA
+CANONIZAÇÃO
+↓
+ETAPA SEGUINTE CONSOME OS ARTEFATOS ANTERIORES
+↓
+...
+↓
+12 RECONCILIAÇÃO E HANDOFF
 ```
+
+O **Discovery** deve aparecer como conversa simulada entre as partes do cenário, porque essa é a natureza operacional da etapa.
+
+A partir daí, cada documento deve ser produzido consumindo os artefatos canônicos anteriores e executando exatamente o que a etapa correspondente determina. Não é necessário inventar uma nova conversa para toda etapa quando o próprio processo determina pesquisa, análise, síntese, comparação ou transformação documental.
+
+Quando a etapa exigir uma decisão que pertence ao cliente, owner ou outro stakeholder, o caso deve simular o retorno a essa pessoa, registrar a resposta e só então canonizar o documento.
 
 A etapa seguinte não deve ser produzida antes de a anterior estar suficientemente revisada e aprovada no cenário simulado.
 
@@ -52,16 +68,19 @@ A etapa seguinte não deve ser produzida antes de a anterior estar suficientemen
 
 1. seguir a ordem definida em `docs/processo/PROCESS_MANIFEST.md`;
 2. gerar um documento por vez;
-3. registrar o contexto que entrou em cada etapa;
-4. mostrar perguntas e decisões materiais, sem transformar o exemplo em transcrição desnecessariamente longa;
-5. separar hipótese, evidência, recomendação e decisão humana;
-6. executar pesquisa atual quando a etapa depender de fatos mutáveis;
-7. representar retornos ao cliente, owner ou stakeholder quando o cenário exigir aprovação externa;
-8. não antecipar stack antes da Visão do Tech Lead;
-9. não antecipar provider/operação antes de DevOps e Infraestrutura;
-10. produzir Backlog, Matriz e Handoff somente depois das camadas anteriores;
-11. manter todos os artefatos canônicos em Markdown;
-12. concluir o cenário documental com o protocolo `CODEX_CANONICAL_START_V1` quando a baseline estiver realmente elegível.
+3. executar o Discovery como conversa simulada real do cenário;
+4. depois do Discovery, fazer cada etapa consumir os documentos anteriores exigidos por seu contrato `consumes`;
+5. registrar o contexto que entrou em cada etapa;
+6. mostrar perguntas e decisões materiais quando a etapa realmente exigir interação humana, sem criar diálogo artificial apenas para preencher o exemplo;
+7. separar hipótese, evidência, recomendação e decisão humana;
+8. executar pesquisa atual quando a etapa depender de fatos mutáveis;
+9. representar retornos ao cliente, owner ou stakeholder quando o cenário exigir aprovação externa;
+10. não antecipar stack antes da Visão do Tech Lead;
+11. não antecipar provider/operação antes de DevOps e Infraestrutura;
+12. produzir Backlog, Matriz e Handoff somente depois das camadas anteriores;
+13. manter todos os artefatos canônicos em Markdown;
+14. concluir o cenário documental com o protocolo `CODEX_CANONICAL_START_V1` quando a baseline estiver realmente elegível;
+15. nunca gerar todos os documentos em uma única resposta ou simular retrospectivamente que o processo foi seguido.
 
 ---
 
@@ -109,16 +128,14 @@ Quando o exemplo partir de um sistema existente, o cenário precisa mostrar expl
 
 ## Casos contratados por cliente
 
-Quando houver cliente real ou simulado, o exemplo deve representar o ciclo de validação:
+Quando houver cliente real ou simulado, o exemplo deve representar o ciclo de validação sempre que a autoridade da decisão pertencer ao cliente:
 
 ```text
 ANALISTA / CONSULTORIA
 ↓
-DISCOVERY
+ETAPA EXECUTADA CONFORME O PROCESSO
 ↓
-PESQUISA / ANÁLISE
-↓
-PROPOSTA
+PROPOSTA / DECISÕES QUE EXIGEM CLIENTE
 ↓
 CLIENTE REVISA
 ↓
@@ -127,9 +144,13 @@ AJUSTES
 CLIENTE APROVA
 ↓
 CANONIZAÇÃO
+↓
+PRÓXIMA ETAPA CONSOME O DOCUMENTO APROVADO
 ```
 
 A aprovação da consultoria não substitui a aprovação do cliente quando a decisão pertence ao cliente.
+
+Isso não significa que toda etapa exige uma nova entrevista. A interação humana deve ocorrer quando a metodologia ou uma decisão material realmente exigir validação.
 
 ---
 
